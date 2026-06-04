@@ -104,6 +104,24 @@ body {
 }
 .bus-ping { animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
 
+/* ── Mobile bottom sheet ───────────────────────────────── */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--carbon-1);
+  border-top: 1px solid var(--border-hi);
+  border-radius: 20px 20px 0 0;
+  z-index: 1000;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+  max-height: 80svh;
+  overflow-y: auto;
+}
+.bottom-sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: var(--carbon-5);
+  margin: 10px auto 4px;
+}
+
 /* ── Scan-line texture ─────────────────────────────────── */
 .scanlines::after {
   content: '';

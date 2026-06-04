@@ -5,6 +5,7 @@ import api from "../lib/api";
 import useAuthStore from "../store/authStore";
 import { useNavigate } from "react-router-dom";
 import { calcETA } from "../lib/eta";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ROLE_COLOR = { student: "bg-indigo-500", driver: "bg-yellow-500", admin: "bg-pink-500" };
 const ROLE_EMOJI = { student: "🧑‍🎓", driver: "🚗", admin: "👤" };
@@ -12,6 +13,8 @@ const ROLE_EMOJI = { student: "🧑‍🎓", driver: "🚗", admin: "👤" };
 export default function StudentPage() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const [buses, setBuses] = useState([]);
   const [stops, setStops] = useState([]);
@@ -150,7 +153,18 @@ export default function StudentPage() {
   const trackedBus = busesWithETA.find((b) => b.id === trackedBusId);
 
   const S = {
-    sidebar: {
+    sidebar: isMobile ? {
+      // Mobile: bottom sheet
+      position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 1000,
+      maxHeight: "75svh", overflowY: "auto",
+      background: "var(--carbon-1)",
+      borderTop: "1px solid var(--border-hi)",
+      borderRadius: "20px 20px 0 0",
+      transform: sheetOpen ? "translateY(0)" : "translateY(100%)",
+      transition: "transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+      display: "flex", flexDirection: "column",
+      fontFamily: "var(--font-body)",
+    } : {
       width: sidebarOpen ? "300px" : "0",
       minWidth: sidebarOpen ? "300px" : "0",
       overflow: "hidden",
@@ -168,10 +182,20 @@ export default function StudentPage() {
   };
 
   return (
-    <div style={{ display:"flex", height:"100svh", background:"var(--carbon)", overflow:"hidden", fontFamily:"var(--font-body)" }}>
+    <div style={{ display:"flex", height:"100svh", background:"var(--carbon)", overflow:"hidden", fontFamily:"var(--font-body)", flexDirection: isMobile ? "column" : "row" }}>
 
-      {/* ── Sidebar ── */}
+      {/* Mobile overlay when sheet open */}
+      {isMobile && sheetOpen && (
+        <div onClick={() => setSheetOpen(false)} style={{
+          position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:999,
+        }}/>
+      )}
+
+      {/* ── Sidebar / Bottom Sheet ── */}
       <aside style={S.sidebar}>
+        {/* Mobile drag handle */}
+        {isMobile && <div className="bottom-sheet-handle" onClick={() => setSheetOpen(false)}/>}
+
         {/* Header */}
         <div style={{ padding:"16px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
           <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"14px" }}>
@@ -486,22 +510,25 @@ export default function StudentPage() {
         {/* Top bar */}
         <div style={{
           display:"flex", alignItems:"center", gap:"10px",
-          padding:"10px 16px",
+          padding: isMobile ? "10px 12px" : "10px 16px",
           background:"var(--carbon-1)",
           borderBottom:"1px solid var(--border)",
           flexShrink:0,
         }}>
-          <button onClick={() => setSidebarOpen(v => !v)} style={{
-            background:"var(--carbon-3)", border:"1px solid var(--border-hi)",
-            borderRadius:"8px", width:"34px", height:"34px", cursor:"pointer",
-            display:"flex", alignItems:"center", justifyContent:"center", color:"var(--text-2)",
-            transition:"all 0.2s", flexShrink:0,
-          }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor="var(--amber)"; e.currentTarget.style.color="var(--amber)"; }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor="var(--border-hi)"; e.currentTarget.style.color="var(--text-2)"; }}
-          >
-            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
+          {/* Desktop: sidebar toggle | Mobile: hidden (use bottom bar) */}
+          {!isMobile && (
+            <button onClick={() => setSidebarOpen(v => !v)} style={{
+              background:"var(--carbon-3)", border:"1px solid var(--border-hi)",
+              borderRadius:"8px", width:"34px", height:"34px", cursor:"pointer",
+              display:"flex", alignItems:"center", justifyContent:"center", color:"var(--text-2)",
+              transition:"all 0.2s", flexShrink:0,
+            }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor="var(--amber)"; e.currentTarget.style.color="var(--amber)"; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor="var(--border-hi)"; e.currentTarget.style.color="var(--text-2)"; }}
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+          )}
 
           <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
             <span style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"15px", color:"var(--text-1)" }}>Live Map</span>
@@ -535,10 +562,12 @@ export default function StudentPage() {
         </div>
 
         {/* Map */}
-        <div style={{ flex:1, padding:"10px" }}>
+        <div style={{ flex:1, padding: isMobile ? "0" : "10px", paddingBottom: isMobile ? "64px" : "10px" }}>
           <div style={{
-            height:"100%", borderRadius:"14px", overflow:"hidden",
-            border:"1px solid var(--border-hi)",
+            height:"100%",
+            borderRadius: isMobile ? "0" : "14px",
+            overflow:"hidden",
+            border: isMobile ? "none" : "1px solid var(--border-hi)",
             boxShadow:"0 8px 40px rgba(0,0,0,0.5)",
           }}>
             <BusMap
@@ -553,6 +582,71 @@ export default function StudentPage() {
             />
           </div>
         </div>
+
+        {/* ── Mobile bottom nav bar ── */}
+        {isMobile && (
+          <div style={{
+            position:"fixed", bottom:0, left:0, right:0, zIndex:998,
+            background:"var(--carbon-1)", borderTop:"1px solid var(--border-hi)",
+            display:"flex", height:"64px",
+            boxShadow:"0 -4px 20px rgba(0,0,0,0.4)",
+          }}>
+            {/* Buses */}
+            <button onClick={() => { setActiveTab("buses"); setSheetOpen(v => !v); }} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px",
+              color: sheetOpen && activeTab==="buses" ? "var(--amber)" : "var(--text-3)",
+            }}>
+              <span style={{ fontSize:"20px" }}>🚌</span>
+              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>
+                Buses {filteredBuses.length > 0 && `(${filteredBuses.length})`}
+              </span>
+            </button>
+
+            {/* Locate me */}
+            <button onClick={handleLocateMe} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px",
+              color:"var(--text-3)",
+            }}>
+              <div style={{
+                width:"42px", height:"42px", borderRadius:"50%",
+                background:"linear-gradient(135deg, var(--amber), var(--amber-dim))",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:"20px", boxShadow:"0 0 16px var(--amber-glow-strong)",
+                marginTop:"-16px",
+              }}>📍</div>
+            </button>
+
+            {/* People */}
+            <button onClick={() => { setActiveTab("people"); setSheetOpen(v => !v); }} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px",
+              color: sheetOpen && activeTab==="people" ? "var(--amber)" : "var(--text-3)",
+              position:"relative",
+            }}>
+              <span style={{ fontSize:"20px" }}>👥</span>
+              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Online</span>
+              {otherUsersArr.filter(u=>u.role==="driver").length > 0 && (
+                <span style={{
+                  position:"absolute", top:"6px", right:"18px",
+                  width:"8px", height:"8px", borderRadius:"50%",
+                  background:"var(--amber)", border:"2px solid var(--carbon-1)",
+                }}/>
+              )}
+            </button>
+
+            {/* Logout */}
+            <button onClick={handleLogout} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px",
+              color:"var(--red)",
+            }}>
+              <span style={{ fontSize:"20px" }}>🚪</span>
+              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import useAuthStore from "../store/authStore";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const login = useAuthStore((s) => s.login);
+  const isMobile = useIsMobile();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,8 +34,9 @@ export default function LoginPage() {
       minHeight: "100svh",
       background: "var(--carbon)",
       display: "flex",
+      flexDirection: isMobile ? "column" : "row",
       fontFamily: "var(--font-body)",
-      overflow: "hidden",
+      overflow: isMobile ? "auto" : "hidden",
       position: "relative",
     }}>
 
@@ -75,9 +78,11 @@ export default function LoginPage() {
         }}/>
       </div>
 
-      {/* ── Left brand panel ── */}
+      {/* ── Left brand panel — hidden on mobile ── */}
       <div style={{
-        width: "46%", display: "flex", flexDirection: "column",
+        width: isMobile ? "100%" : "46%",
+        display: isMobile ? "none" : "flex",
+        flexDirection: "column",
         justifyContent: "center", padding: "60px",
         position: "relative",
       }} className="fade-in-up">
@@ -140,9 +145,30 @@ export default function LoginPage() {
       {/* ── Right form panel ── */}
       <div style={{
         flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
-        padding: "40px",
+        padding: isMobile ? "24px 16px" : "40px",
+        minHeight: isMobile ? "100svh" : "auto",
       }}>
-        <div style={{ width: "100%", maxWidth: "400px" }} className="fade-in-up-2">
+        <div style={{ width: "100%", maxWidth: "420px" }} className="fade-in-up-2">
+
+          {/* Mobile logo */}
+          {isMobile && (
+            <div style={{ textAlign:"center", marginBottom:"28px" }}>
+              <div style={{
+                display:"inline-flex", alignItems:"center", gap:"12px",
+              }}>
+                <div style={{
+                  width:"48px", height:"48px", borderRadius:"14px",
+                  background:"linear-gradient(135deg, var(--amber), var(--amber-dim))",
+                  display:"flex", alignItems:"center", justifyContent:"center", fontSize:"24px",
+                  boxShadow:"0 0 24px var(--amber-glow-strong)",
+                }}>🚌</div>
+                <div>
+                  <div style={{ fontFamily:"var(--font-display)", fontSize:"24px", fontWeight:800, color:"var(--text-1)" }}>BusTrack</div>
+                  <div style={{ fontSize:"12px", color:"var(--text-3)" }}>Real-time bus tracking</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Card */}
           <div style={{

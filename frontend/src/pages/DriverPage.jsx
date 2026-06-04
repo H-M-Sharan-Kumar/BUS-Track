@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from "react";
+import { useIsMobile } from "../hooks/useMediaQuery";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -80,6 +81,8 @@ function LayerSwitcher({ active, onChange }) {
 export default function DriverPage() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const [controlsOpen, setControlsOpen] = useState(false);
 
   const [location, setLocation]       = useState(null);
   const [accuracy, setAccuracy]       = useState(null);
@@ -187,16 +190,33 @@ export default function DriverPage() {
     <div style={{
       display:"flex", height:"100svh", background:"var(--carbon)",
       fontFamily:"var(--font-body)", overflow:"hidden",
+      flexDirection: isMobile ? "column" : "row",
     }}>
+      {/* Mobile overlay */}
+      {isMobile && controlsOpen && (
+        <div onClick={() => setControlsOpen(false)} style={{
+          position:"fixed", inset:0, background:"rgba(0,0,0,0.5)", zIndex:999,
+        }}/>
+      )}
 
-      {/* ── Sidebar ── */}
-      <aside style={{
+      {/* ── Sidebar / Bottom sheet ── */}
+      <aside style={isMobile ? {
+        position:"fixed", bottom:0, left:0, right:0, zIndex:1000,
+        maxHeight:"80svh", overflowY:"auto",
+        background:"var(--carbon-1)",
+        borderTop:"1px solid var(--border-hi)",
+        borderRadius:"20px 20px 0 0",
+        transform: controlsOpen ? "translateY(0)" : "translateY(100%)",
+        transition:"transform 0.35s cubic-bezier(0.4,0,0.2,1)",
+        display:"flex", flexDirection:"column",
+      } : {
         width:"268px", minWidth:"268px",
         display:"flex", flexDirection:"column",
         background:"var(--carbon-1)",
         borderRight:"1px solid var(--border)",
         overflow:"hidden",
       }}>
+        {isMobile && <div className="bottom-sheet-handle" onClick={() => setControlsOpen(false)}/>}
 
         {/* Header */}
         <div style={{ padding:"14px 16px", borderBottom:"1px solid var(--border)", flexShrink:0 }}>
@@ -473,10 +493,12 @@ export default function DriverPage() {
         </div>
 
         {/* Map */}
-        <div style={{ flex:1, padding:"10px" }}>
+        <div style={{ flex:1, padding: isMobile ? "0" : "10px", paddingBottom: isMobile ? "64px" : "10px" }}>
           <div style={{
-            height:"100%", borderRadius:"14px", overflow:"hidden",
-            border:"1px solid var(--border-hi)",
+            height:"100%",
+            borderRadius: isMobile ? "0" : "14px",
+            overflow:"hidden",
+            border: isMobile ? "none" : "1px solid var(--border-hi)",
             boxShadow:"0 8px 40px rgba(0,0,0,0.6)",
             position:"relative",
           }}>
@@ -518,6 +540,50 @@ export default function DriverPage() {
             </MapContainer>
           </div>
         </div>
+
+        {/* ── Mobile bottom bar ── */}
+        {isMobile && (
+          <div style={{
+            position:"fixed", bottom:0, left:0, right:0, zIndex:998,
+            background:"var(--carbon-1)", borderTop:"1px solid var(--border-hi)",
+            display:"flex", height:"64px",
+            boxShadow:"0 -4px 20px rgba(0,0,0,0.4)",
+          }}>
+            {/* Controls toggle */}
+            <button onClick={() => setControlsOpen(v => !v)} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px",
+              color: controlsOpen ? "var(--amber)" : "var(--text-3)",
+            }}>
+              <span style={{ fontSize:"20px" }}>⚙️</span>
+              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Controls</span>
+            </button>
+
+            {/* Big start/stop button */}
+            <button onClick={tripActive ? stopTrip : startTrip} disabled={!tripActive && !canStart} style={{
+              flex:2, margin:"8px", borderRadius:"12px", border:"none", cursor: (!tripActive && !canStart) ? "not-allowed" : "pointer",
+              background: tripActive
+                ? "linear-gradient(135deg,#ef4444,#b91c1c)"
+                : canStart
+                  ? "linear-gradient(135deg,var(--amber),var(--amber-dim))"
+                  : "var(--carbon-3)",
+              color: tripActive ? "#fff" : canStart ? "#0a0600" : "var(--text-3)",
+              fontFamily:"var(--font-display)", fontWeight:800, fontSize:"14px",
+              boxShadow: tripActive ? "0 4px 16px rgba(239,68,68,0.4)" : canStart ? "0 4px 16px var(--amber-glow-strong)" : "none",
+            }}>
+              {tripActive ? `⏹ End · ${fmt(elapsed)}` : "▶ Start Trip"}
+            </button>
+
+            {/* Logout */}
+            <button onClick={handleLogout} style={{
+              flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+              background:"none", border:"none", cursor:"pointer", gap:"3px", color:"var(--red)",
+            }}>
+              <span style={{ fontSize:"20px" }}>🚪</span>
+              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

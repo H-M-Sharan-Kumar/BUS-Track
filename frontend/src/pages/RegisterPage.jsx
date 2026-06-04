@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ROLES = [
   { value: "student", label: "Student", icon: "🧑‍🎓", desc: "Track buses, view ETA" },
@@ -10,6 +11,7 @@ const ROLES = [
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [form, setForm] = useState({ name: "", email: "", password: "", role: "student", phone: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,8 +34,9 @@ export default function RegisterPage() {
     <div style={{
       minHeight: "100svh",
       background: "var(--carbon)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      padding: "24px",
+      display: "flex", alignItems: "flex-start", justifyContent: "center",
+      padding: isMobile ? "16px" : "24px",
+      overflowY: "auto",
       fontFamily: "var(--font-body)",
       position: "relative", overflow: "hidden",
     }}>
