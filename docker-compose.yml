@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: bustrack_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bustrack
+      POSTGRES_PASSWORD: bustrack123
+      POSTGRES_DB: bustrack_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+
+  redis:
+    image: redis:7-alpine
+    container_name: bustrack_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

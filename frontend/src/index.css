@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/* Load fonts with display:swap so text shows immediately in fallback font */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:.,/-+%');
+
+/* ── Design tokens ─────────────────────────────────────── */
+:root {
+  --carbon:    #080a0e;
+  --carbon-1:  #0d1017;
+  --carbon-2:  #12161f;
+  --carbon-3:  #1a1f2c;
+  --carbon-4:  #242938;
+  --carbon-5:  #2e3447;
+  --border:    #1e2535;
+  --border-hi: #2d3650;
+
+  --amber:     #f5a623;
+  --amber-dim: #c47f10;
+  --amber-glow:rgba(245,166,35,0.15);
+  --amber-glow-strong:rgba(245,166,35,0.3);
+
+  --sky:       #38bdf8;
+  --sky-dim:   #0ea5e9;
+  --sky-glow:  rgba(56,189,248,0.12);
+
+  --green:     #34d399;
+  --green-glow:rgba(52,211,153,0.12);
+
+  --red:       #f87171;
+  --red-glow:  rgba(248,113,113,0.12);
+
+  --text-1:    #f0f2f7;
+  --text-2:    #8892a4;
+  --text-3:    #4d5568;
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
+
+/* ── Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--carbon);
+  color: var(--text-1);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  /* iOS safe area */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+  /* Prevent iOS bounce */
+  overscroll-behavior: none;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--carbon-5); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-hi); }
+
+/* ── Leaflet overrides ─────────────────────────────────── */
+.leaflet-container {
+  width: 100%; height: 100%;
+  font-family: var(--font-body) !important;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--carbon-2) !important;
+  border: 1px solid var(--border-hi) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6) !important;
+  color: var(--text-1) !important;
+}
+.leaflet-popup-tip { background: var(--carbon-2) !important; }
+.leaflet-popup-close-button { color: var(--text-2) !important; }
+.leaflet-control-zoom {
+  border: 1px solid var(--border-hi) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden;
+}
+.leaflet-control-zoom a {
+  background: var(--carbon-2) !important;
+  color: var(--text-2) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.leaflet-control-zoom a:hover { background: var(--carbon-3) !important; color: var(--text-1) !important; }
+.leaflet-control-attribution { background: rgba(8,10,14,0.7) !important; color: var(--text-3) !important; font-size: 9px !important; }
+
+/* ── Bus ping animation ─────────────────────────────────── */
+@keyframes ping {
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+.bus-ping { animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+
+/* ── Scan-line texture ─────────────────────────────────── */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Live pulse dot ────────────────────────────────────── */
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.live-dot { animation: livePulse 1.4s ease-in-out infinite; }
+
+/* ── Fade-in-up ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+.fade-in-up-1 { animation: fadeInUp 0.5s 0.05s ease both; }
+.fade-in-up-2 { animation: fadeInUp 0.5s 0.10s ease both; }
+.fade-in-up-3 { animation: fadeInUp 0.5s 0.15s ease both; }
+.fade-in-up-4 { animation: fadeInUp 0.5s 0.20s ease both; }
+
+/* ── Shimmer ───────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background: linear-gradient(90deg, var(--amber) 0%, #fff8e1 40%, var(--amber) 60%, var(--amber-dim) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 4s linear infinite;
+}

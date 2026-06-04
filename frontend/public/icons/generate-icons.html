@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<!-- Open this file in a browser, right-click each canvas and save as the named PNG -->
+<body style="background:#080a0e;display:flex;flex-wrap:wrap;gap:16px;padding:16px">
+<script>
+const sizes = [72,96,128,144,152,192,384,512];
+sizes.forEach(size => {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  canvas.title = `icon-${size}x${size}.png`;
+  const ctx = canvas.getContext('2d');
+  // Background
+  const r = size * 0.18;
+  ctx.beginPath();
+  ctx.moveTo(r, 0); ctx.lineTo(size-r, 0);
+  ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size-r);
+  ctx.quadraticCurveTo(size, size, size-r, size);
+  ctx.lineTo(r, size);
+  ctx.quadraticCurveTo(0, size, 0, size-r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  const grad = ctx.createLinearGradient(0,0,size,size);
+  grad.addColorStop(0,'#f5a623'); grad.addColorStop(1,'#c47f10');
+  ctx.fillStyle = grad; ctx.fill();
+  // Bus emoji
+  ctx.font = `${size*0.55}px serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('🚌', size/2, size/2 + size*0.03);
+  document.body.appendChild(canvas);
+  const label = document.createElement('div');
+  label.textContent = `icon-${size}x${size}.png`;
+  label.style.cssText = 'color:#f5a623;font-size:11px;font-family:monospace';
+  document.body.appendChild(label);
+});
+</script>
+</body>
+</html>

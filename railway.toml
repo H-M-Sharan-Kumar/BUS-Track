@@ -1,0 +1,9 @@
+[build]
+builder = "nixpacks"
+buildCommand = "cd frontend && npm install && npm run build && cd ../backend && npm install"
+
+[deploy]
+startCommand = "cd backend && npm start"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "on_failure"
