@@ -1,7 +1,7 @@
 [phases.install]
 cmds = [
-  "cd backend && npm install",
-  "cd frontend && npm install"
+  "cd backend && npm install --omit=dev",
+  "cd frontend && npm install --include=dev"
 ]
 
 [phases.build]
