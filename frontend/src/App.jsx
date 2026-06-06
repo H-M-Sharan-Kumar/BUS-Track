@@ -8,14 +8,7 @@ const LoginPage    = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const StudentPage  = lazy(() => import("./pages/StudentPage"));
 const DriverPage   = lazy(() => import("./pages/DriverPage"));
-
-const AdminPage = lazy(() => Promise.resolve({
-  default: () => (
-    <div style={{ minHeight:"100svh", background:"var(--carbon)", display:"flex", alignItems:"center", justifyContent:"center", color:"var(--text-1)", fontFamily:"var(--font-display)", fontSize:"20px" }}>
-      📊 Admin Dashboard — Coming soon
-    </div>
-  )
-}));
+const AdminPage    = lazy(() => import("./pages/AdminPage"));
 
 // Minimal splash shown while a chunk downloads
 function PageLoader() {
