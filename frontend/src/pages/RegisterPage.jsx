@@ -76,7 +76,7 @@ export default function RegisterPage() {
             fontFamily:"var(--font-display)", fontSize:"28px", fontWeight:800,
             letterSpacing:"-1px", color:"var(--text-1)",
           }}>Create your account</h1>
-          <p style={{ color:"var(--text-3)", fontSize:"13px", marginTop:"6px" }}>Join your college transit network</p>
+          <p style={{ color:"var(--text-3)", fontSize:"15px", marginTop:"6px" }}>Join your college transit network</p>
         </div>
 
         {/* Card */}
@@ -96,7 +96,7 @@ export default function RegisterPage() {
             <div style={{
               background:"var(--red-glow)", border:"1px solid rgba(248,113,113,0.3)",
               borderRadius:"8px", padding:"10px 14px",
-              color:"var(--red)", fontSize:"13px", marginBottom:"20px",
+              color:"var(--red)", fontSize:"15px", marginBottom:"20px",
               display:"flex", alignItems:"center", gap:"8px",
             }}>⚠ {error}</div>
           )}
@@ -106,7 +106,7 @@ export default function RegisterPage() {
             {/* Role picker */}
             <div>
               <label style={{
-                display:"block", fontSize:"11px", fontWeight:600, textTransform:"uppercase",
+                display:"block", fontSize:"13px", fontWeight:600, textTransform:"uppercase",
                 letterSpacing:"0.8px", color:"var(--text-3)", marginBottom:"10px",
                 fontFamily:"var(--font-mono)",
               }}>Role</label>
@@ -125,10 +125,10 @@ export default function RegisterPage() {
                   >
                     <div style={{ fontSize:"20px", marginBottom:"4px" }}>{r.icon}</div>
                     <div style={{
-                      fontSize:"11px", fontWeight:700, fontFamily:"var(--font-display)",
+                      fontSize:"13px", fontWeight:700, fontFamily:"var(--font-display)",
                       color: form.role === r.value ? "var(--amber)" : "var(--text-2)",
                     }}>{r.label}</div>
-                    <div style={{ fontSize:"9px", color:"var(--text-3)", marginTop:"2px", lineHeight:1.3 }}>{r.desc}</div>
+                    <div style={{ fontSize:"11px", color:"var(--text-3)", marginTop:"2px", lineHeight:1.3 }}>{r.desc}</div>
                   </button>
                 ))}
               </div>
@@ -143,7 +143,7 @@ export default function RegisterPage() {
             ].map((field) => (
               <div key={field.key}>
                 <label style={{
-                  display:"block", fontSize:"11px", fontWeight:600, textTransform:"uppercase",
+                  display:"block", fontSize:"13px", fontWeight:600, textTransform:"uppercase",
                   letterSpacing:"0.8px", color:"var(--text-3)", marginBottom:"8px",
                   fontFamily:"var(--font-mono)",
                 }}>{field.label}</label>
@@ -157,7 +157,7 @@ export default function RegisterPage() {
                     width:"100%", background:"var(--carbon-3)",
                     border:"1px solid var(--border-hi)", borderRadius:"10px",
                     padding:"12px 16px", color:"var(--text-1)",
-                    fontSize:"14px", fontFamily:"var(--font-body)", outline:"none",
+                    fontSize:"16px", fontFamily:"var(--font-body)", outline:"none",
                     transition:"border-color 0.2s, box-shadow 0.2s",
                   }}
                   onFocus={(e) => { e.target.style.borderColor="var(--sky)"; e.target.style.boxShadow="0 0 0 3px var(--sky-glow)"; }}
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                 background: loading ? "var(--carbon-4)" : "linear-gradient(135deg, var(--amber), var(--amber-dim))",
                 border:"none", borderRadius:"10px", padding:"13px",
                 color: loading ? "var(--text-3)" : "#0a0600",
-                fontSize:"14px", fontWeight:700, fontFamily:"var(--font-display)",
+                fontSize:"16px", fontWeight:700, fontFamily:"var(--font-display)",
                 cursor: loading ? "not-allowed" : "pointer",
                 transition:"all 0.2s",
                 boxShadow: loading ? "none" : "0 4px 20px var(--amber-glow-strong)",
@@ -187,7 +187,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <div style={{ textAlign:"center", marginTop:"20px", fontSize:"13px", color:"var(--text-3)" }}>
+          <div style={{ textAlign:"center", marginTop:"20px", fontSize:"15px", color:"var(--text-3)" }}>
             Already have an account?{" "}
             <button onClick={() => navigate("/login")}
               style={{ background:"none", border:"none", cursor:"pointer", color:"var(--amber)", fontWeight:600 }}>

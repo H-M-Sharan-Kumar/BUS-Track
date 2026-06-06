@@ -212,7 +212,7 @@ export default function StudentPage() {
       fontFamily: "var(--font-body)",
     },
     sectionLabel: {
-      fontSize: "10px", fontWeight: 700, letterSpacing: "1.2px",
+      fontSize:"12px", fontWeight: 700, letterSpacing: "1.2px",
       textTransform: "uppercase", color: "var(--text-3)",
       fontFamily: "var(--font-mono)", marginBottom: "8px",
     },
@@ -233,10 +233,10 @@ export default function StudentPage() {
         }}>
           <span style={{ fontSize:"22px" }}>🚌</span>
           <div>
-            <div style={{ fontWeight:700, fontSize:"13px", color:"#fff", fontFamily:"var(--font-display)" }}>
+            <div style={{ fontWeight:700, fontSize:"15px", color:"#fff", fontFamily:"var(--font-display)" }}>
               Bus approaching {arrivalAlert.stop}
             </div>
-            <div style={{ fontSize:"11px", color:"#DCFCE7" }}>
+            <div style={{ fontSize:"13px", color:"#DCFCE7" }}>
               Arriving in about {arrivalAlert.eta < 1 ? "less than a minute" : `${arrivalAlert.eta} min`}
             </div>
           </div>
@@ -266,14 +266,14 @@ export default function StudentPage() {
               boxShadow:"0 0 16px var(--amber-glow)",
             }}>🚌</div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px", color:"var(--text-1)" }}>BusTrack</div>
-              <div style={{ fontSize:"11px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user?.name}</div>
+              <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px", color:"var(--text-1)" }}>BusTrack</div>
+              <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user?.name}</div>
             </div>
             <button onClick={handleLogout} style={{
               display:"flex", alignItems:"center", gap:"5px",
               background:"rgba(248,113,113,0.08)", border:"1px solid rgba(248,113,113,0.2)",
               borderRadius:"8px", padding:"5px 10px",
-              color:"var(--red)", fontSize:"11px", fontWeight:600, cursor:"pointer",
+              color:"var(--red)", fontSize:"13px", fontWeight:600, cursor:"pointer",
               transition:"all 0.2s", whiteSpace:"nowrap",
             }}
               onMouseEnter={e => { e.currentTarget.style.background="rgba(248,113,113,0.15)"; e.currentTarget.style.borderColor="rgba(248,113,113,0.4)"; }}
@@ -286,7 +286,7 @@ export default function StudentPage() {
 
           {/* Search */}
           <div style={{ position:"relative" }}>
-            <span style={{ position:"absolute", left:"12px", top:"50%", transform:"translateY(-50%)", fontSize:"13px", pointerEvents:"none" }}>🔍</span>
+            <span style={{ position:"absolute", left:"12px", top:"50%", transform:"translateY(-50%)", fontSize:"15px", pointerEvents:"none" }}>🔍</span>
             <input
               type="text" value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -295,7 +295,7 @@ export default function StudentPage() {
                 width:"100%", background:"var(--carbon-3)",
                 border:"1px solid var(--border-hi)", borderRadius:"8px",
                 padding:"9px 12px 9px 34px",
-                color:"var(--text-1)", fontSize:"13px",
+                color:"var(--text-1)", fontSize:"15px",
                 fontFamily:"var(--font-body)", outline:"none",
                 transition:"border-color 0.2s",
               }}
@@ -309,22 +309,22 @@ export default function StudentPage() {
         <div style={{ padding:"10px 14px", flexShrink:0 }}>
           {locationError ? (
             <div style={{ background:"var(--red-glow)", border:"1px solid rgba(248,113,113,0.25)", borderRadius:"10px", padding:"10px 12px" }}>
-              <div style={{ color:"var(--red)", fontSize:"12px", marginBottom:"6px" }}>⚠ {locationError}</div>
-              <button onClick={startTracking} style={{ background:"rgba(248,113,113,0.15)", border:"none", borderRadius:"6px", padding:"4px 10px", color:"var(--red)", fontSize:"11px", cursor:"pointer" }}>Retry</button>
+              <div style={{ color:"var(--red)", fontSize:"14px", marginBottom:"6px" }}>⚠ {locationError}</div>
+              <button onClick={startTracking} style={{ background:"rgba(248,113,113,0.15)", border:"none", borderRadius:"6px", padding:"4px 10px", color:"var(--red)", fontSize:"13px", cursor:"pointer" }}>Retry</button>
             </div>
           ) : userLocation ? (
             <div style={{ background:"rgba(99,102,241,0.08)", border:"1px solid rgba(99,102,241,0.2)", borderRadius:"10px", padding:"10px 12px" }}>
               <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"4px" }}>
                 <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"#818cf8", display:"inline-block", animation:"livePulse 1.4s ease-in-out infinite" }}/>
-                <span style={{ fontSize:"10px", fontWeight:700, letterSpacing:"0.8px", textTransform:"uppercase", color:"#818cf8", fontFamily:"var(--font-mono)" }}>GPS Active</span>
+                <span style={{ fontSize:"12px", fontWeight:700, letterSpacing:"0.8px", textTransform:"uppercase", color:"#818cf8", fontFamily:"var(--font-mono)" }}>GPS Active</span>
               </div>
-              <div style={{ fontFamily:"var(--font-mono)", fontSize:"11px", color:"var(--text-2)" }}>{userLocation[0].toFixed(4)}, {userLocation[1].toFixed(4)}</div>
-              {accuracy && <div style={{ fontSize:"10px", color:"var(--text-3)", marginTop:"2px" }}>±{Math.round(accuracy)}m accuracy</div>}
+              <div style={{ fontFamily:"var(--font-mono)", fontSize:"13px", color:"var(--text-2)" }}>{userLocation[0].toFixed(4)}, {userLocation[1].toFixed(4)}</div>
+              {accuracy && <div style={{ fontSize:"12px", color:"var(--text-3)", marginTop:"2px" }}>±{Math.round(accuracy)}m accuracy</div>}
             </div>
           ) : (
             <div style={{ background:"rgba(245,166,35,0.08)", border:"1px solid rgba(245,166,35,0.2)", borderRadius:"10px", padding:"10px 12px", display:"flex", alignItems:"center", gap:"8px" }}>
               <span style={{ width:"6px", height:"6px", borderRadius:"50%", background:"var(--amber)", display:"inline-block", animation:"livePulse 1.4s ease-in-out infinite" }}/>
-              <span style={{ fontSize:"12px", color:"var(--amber)" }}>Acquiring GPS…</span>
+              <span style={{ fontSize:"14px", color:"var(--amber)" }}>Acquiring GPS…</span>
             </div>
           )}
         </div>
@@ -339,13 +339,13 @@ export default function StudentPage() {
               flex:1, padding:"7px", borderRadius:"7px", border:"none", cursor:"pointer",
               background: activeTab === t.key ? "var(--carbon-5)" : "transparent",
               color: activeTab === t.key ? "var(--text-1)" : "var(--text-3)",
-              fontSize:"11px", fontWeight:600, fontFamily:"var(--font-display)",
+              fontSize:"13px", fontWeight:600, fontFamily:"var(--font-display)",
               transition:"all 0.2s",
               display:"flex", alignItems:"center", justifyContent:"center", gap:"4px",
             }}>
               {t.label}
               {t.key === "people" && otherUsersArr.filter(u=>u.role==="driver").length > 0 && (
-                <span style={{ background:"var(--amber)", color:"#000", fontSize:"9px", fontWeight:800, padding:"1px 5px", borderRadius:"10px" }}>
+                <span style={{ background:"var(--amber)", color:"#000", fontSize:"11px", fontWeight:800, padding:"1px 5px", borderRadius:"10px" }}>
                   {otherUsersArr.filter(u=>u.role==="driver").length}🚗
                 </span>
               )}
@@ -371,7 +371,7 @@ export default function StudentPage() {
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:"10px" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:"6px" }}>
                       <span className="live-dot" style={{ width:"7px", height:"7px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-                      <span style={{ fontSize:"10px", fontWeight:700, textTransform:"uppercase", letterSpacing:"1px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>Live Tracking</span>
+                      <span style={{ fontSize:"12px", fontWeight:700, textTransform:"uppercase", letterSpacing:"1px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>Live Tracking</span>
                     </div>
                     <button onClick={() => setTrackedBusId(null)} style={{ background:"none", border:"none", cursor:"pointer", color:"var(--text-3)", fontSize:"16px", lineHeight:1 }}>×</button>
                   </div>
@@ -385,14 +385,14 @@ export default function StudentPage() {
                       { label:"ARRIVES", value: trackedBus._eta?.arrivalTime ?? "—", unit:"", color:"var(--sky)" },
                     ].map(s => (
                       <div key={s.label} style={{ background:"rgba(0,0,0,0.25)", borderRadius:"8px", padding:"8px 6px", textAlign:"center" }}>
-                        <div style={{ fontSize:"9px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"3px" }}>{s.label}</div>
-                        <div style={{ fontFamily:"var(--font-mono)", fontWeight:700, fontSize:"14px", color:s.color, lineHeight:1 }}>{s.value}</div>
-                        {s.unit && <div style={{ fontSize:"9px", color:"var(--text-3)", marginTop:"2px" }}>{s.unit}</div>}
+                        <div style={{ fontSize:"11px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"3px" }}>{s.label}</div>
+                        <div style={{ fontFamily:"var(--font-mono)", fontWeight:700, fontSize:"16px", color:s.color, lineHeight:1 }}>{s.value}</div>
+                        {s.unit && <div style={{ fontSize:"11px", color:"var(--text-3)", marginTop:"2px" }}>{s.unit}</div>}
                       </div>
                     ))}
                   </div>
                   {trackedBus._eta && (
-                    <div style={{ marginTop:"8px", fontSize:"10px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>
+                    <div style={{ marginTop:"8px", fontSize:"12px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>
                       📍 {trackedBus._eta.distanceKm < 1 ? `${(trackedBus._eta.distanceKm*1000).toFixed(0)}m` : `${trackedBus._eta.distanceKm.toFixed(1)}km`} away
                       {!trackedBus.speed && " · est. 20 km/h"}
                     </div>
@@ -413,14 +413,14 @@ export default function StudentPage() {
                           {i < stopsWithETA.length - 1 && <div style={{ width:"2px", flex:1, minHeight:"14px", background:"var(--border-hi)" }}/>}
                         </div>
                         <div style={{ flex:1, minWidth:0 }}>
-                          <div style={{ fontSize:"12px", fontWeight:600, color:"var(--text-1)" }}>{s.name}</div>
+                          <div style={{ fontSize:"14px", fontWeight:600, color:"var(--text-1)" }}>{s.name}</div>
                         </div>
                         {s._eta && (
                           <div style={{ textAlign:"right", flexShrink:0 }}>
-                            <div style={{ fontSize:"12px", fontWeight:700, fontFamily:"var(--font-mono)", color: s._eta.etaMin < 3 ? "var(--green)" : "var(--sky)" }}>
+                            <div style={{ fontSize:"14px", fontWeight:700, fontFamily:"var(--font-mono)", color: s._eta.etaMin < 3 ? "var(--green)" : "var(--sky)" }}>
                               {s._eta.etaMin < 1 ? "<1" : s._eta.etaMin} min
                             </div>
-                            <div style={{ fontSize:"9px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
+                            <div style={{ fontSize:"11px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
                               {s._eta.km < 1 ? `${(s._eta.km*1000).toFixed(0)}m` : `${s._eta.km.toFixed(1)}km`}
                             </div>
                           </div>
@@ -456,12 +456,12 @@ export default function StudentPage() {
                         display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px",
                       }}>🚌</div>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"13px", color:"var(--text-1)" }}>{bus.bus_number}</div>
-                        <div style={{ fontSize:"11px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
+                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"15px", color:"var(--text-1)" }}>{bus.bus_number}</div>
+                        <div style={{ fontSize:"13px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
                           {eta ? (eta.distanceKm < 1 ? `${(eta.distanceKm*1000).toFixed(0)}m` : `${eta.distanceKm.toFixed(1)}km`) : "—"} away
                         </div>
                       </div>
-                      {isTracked && <span style={{ fontSize:"10px", fontWeight:700, color:"var(--green)", fontFamily:"var(--font-mono)" }}>● LIVE</span>}
+                      {isTracked && <span style={{ fontSize:"12px", fontWeight:700, color:"var(--green)", fontFamily:"var(--font-mono)" }}>● LIVE</span>}
                     </div>
                     <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"4px" }}>
                       {[
@@ -473,14 +473,14 @@ export default function StudentPage() {
                           background: s.active ? "rgba(0,0,0,0.2)" : "var(--carbon-3)",
                           borderRadius:"6px", padding:"5px 4px", textAlign:"center",
                         }}>
-                          <div style={{ fontSize:"8px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
-                          <div style={{ fontFamily:"var(--font-mono)", fontWeight:700, fontSize:"11px", color: s.active ? s.color : "var(--text-3)", marginTop:"2px" }}>{s.value}</div>
-                          {s.unit && <div style={{ fontSize:"8px", color:"var(--text-3)" }}>{s.unit}</div>}
+                          <div style={{ fontSize:"10px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
+                          <div style={{ fontFamily:"var(--font-mono)", fontWeight:700, fontSize:"13px", color: s.active ? s.color : "var(--text-3)", marginTop:"2px" }}>{s.value}</div>
+                          {s.unit && <div style={{ fontSize:"10px", color:"var(--text-3)" }}>{s.unit}</div>}
                         </div>
                       ))}
                     </div>
                     {!bus.latitude && (
-                      <div style={{ marginTop:"6px", fontSize:"10px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>Waiting for driver GPS…</div>
+                      <div style={{ marginTop:"6px", fontSize:"12px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>Waiting for driver GPS…</div>
                     )}
                   </div>
                 );
@@ -489,8 +489,8 @@ export default function StudentPage() {
               {!loadingBuses && filteredBuses.length === 0 && (
                 <div style={{ textAlign:"center", padding:"32px 16px", color:"var(--text-3)" }}>
                   <div style={{ fontSize:"32px", marginBottom:"8px" }}>🚌</div>
-                  <div style={{ fontSize:"13px", fontWeight:600 }}>No buses nearby</div>
-                  <div style={{ fontSize:"11px", marginTop:"4px" }}>Buses appear when drivers go online</div>
+                  <div style={{ fontSize:"15px", fontWeight:600 }}>No buses nearby</div>
+                  <div style={{ fontSize:"13px", marginTop:"4px" }}>Buses appear when drivers go online</div>
                 </div>
               )}
             </div>
@@ -510,14 +510,14 @@ export default function StudentPage() {
                       <span style={{
                         background: drivers.length > 0 ? "var(--amber)" : "var(--carbon-4)",
                         color: drivers.length > 0 ? "#000" : "var(--text-3)",
-                        fontSize:"9px", fontWeight:800, padding:"2px 7px", borderRadius:"10px",
+                        fontSize:"11px", fontWeight:800, padding:"2px 7px", borderRadius:"10px",
                       }}>{drivers.length}</span>
                     </div>
                     {drivers.length === 0 ? (
                       <div style={{ background:"rgba(245,166,35,0.04)", border:"1px solid rgba(245,166,35,0.12)", borderRadius:"10px", padding:"14px", textAlign:"center" }}>
                         <div style={{ fontSize:"24px", marginBottom:"4px" }}>🚗</div>
-                        <div style={{ fontSize:"12px", color:"rgba(245,166,35,0.5)", fontWeight:600 }}>No drivers online</div>
-                        <div style={{ fontSize:"10px", color:"var(--text-3)", marginTop:"2px" }}>Bus positions won't update</div>
+                        <div style={{ fontSize:"14px", color:"rgba(245,166,35,0.5)", fontWeight:600 }}>No drivers online</div>
+                        <div style={{ fontSize:"12px", color:"var(--text-3)", marginTop:"2px" }}>Bus positions won't update</div>
                       </div>
                     ) : drivers.map(u => (
                       <div key={u.id} style={{
@@ -532,18 +532,18 @@ export default function StudentPage() {
                             <span style={{ position:"absolute", top:"-2px", right:"-2px", width:"11px", height:"11px", background:"var(--green)", borderRadius:"50%", border:"2px solid var(--carbon-1)" }} className="live-dot"/>
                           </div>
                           <div style={{ flex:1, minWidth:0 }}>
-                            <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"13px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.name}</div>
+                            <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"15px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.name}</div>
                             <div style={{ display:"flex", alignItems:"center", gap:"6px", marginTop:"2px" }}>
-                              <span style={{ fontSize:"10px", color:"var(--amber)", fontWeight:700 }}>DRIVER</span>
+                              <span style={{ fontSize:"12px", color:"var(--amber)", fontWeight:700 }}>DRIVER</span>
                               {u.latitude
-                                ? <span style={{ background:"rgba(52,211,153,0.15)", color:"var(--green)", fontSize:"9px", fontWeight:600, padding:"1px 6px", borderRadius:"6px" }}>📍 Sharing</span>
-                                : <span style={{ background:"var(--carbon-4)", color:"var(--text-3)", fontSize:"9px", padding:"1px 6px", borderRadius:"6px" }}>No GPS</span>
+                                ? <span style={{ background:"rgba(52,211,153,0.15)", color:"var(--green)", fontSize:"11px", fontWeight:600, padding:"1px 6px", borderRadius:"6px" }}>📍 Sharing</span>
+                                : <span style={{ background:"var(--carbon-4)", color:"var(--text-3)", fontSize:"11px", padding:"1px 6px", borderRadius:"6px" }}>No GPS</span>
                               }
                             </div>
                           </div>
                         </div>
                         {u.latitude && (
-                          <div style={{ marginTop:"8px", paddingTop:"8px", borderTop:"1px solid rgba(245,166,35,0.15)", fontFamily:"var(--font-mono)", fontSize:"10px", color:"rgba(245,166,35,0.5)" }}>
+                          <div style={{ marginTop:"8px", paddingTop:"8px", borderTop:"1px solid rgba(245,166,35,0.15)", fontFamily:"var(--font-mono)", fontSize:"12px", color:"rgba(245,166,35,0.5)" }}>
                             {u.latitude.toFixed(5)}, {u.longitude.toFixed(5)}
                           </div>
                         )}
@@ -561,10 +561,10 @@ export default function StudentPage() {
                 <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
                   <div style={{ width:"34px", height:"34px", borderRadius:"50%", background:"rgba(99,102,241,0.3)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>🧑‍🎓</div>
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontWeight:600, fontSize:"13px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                      {user?.name} <span style={{ color:"#818cf8", fontSize:"10px" }}>(You)</span>
+                    <div style={{ fontWeight:600, fontSize:"15px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                      {user?.name} <span style={{ color:"#818cf8", fontSize:"12px" }}>(You)</span>
                     </div>
-                    <div style={{ fontSize:"10px", color:"var(--text-3)", textTransform:"capitalize" }}>{user?.role}</div>
+                    <div style={{ fontSize:"12px", color:"var(--text-3)", textTransform:"capitalize" }}>{user?.role}</div>
                   </div>
                   <span className="live-dot" style={{ width:"7px", height:"7px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
                 </div>
@@ -577,19 +577,19 @@ export default function StudentPage() {
                       {ROLE_EMOJI[u.role] || "👤"}
                     </div>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontWeight:600, fontSize:"13px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.name}</div>
-                      <div style={{ fontSize:"10px", color:"var(--text-3)", textTransform:"capitalize" }}>{u.role}</div>
+                      <div style={{ fontWeight:600, fontSize:"15px", color:"var(--text-1)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.name}</div>
+                      <div style={{ fontSize:"12px", color:"var(--text-3)", textTransform:"capitalize" }}>{u.role}</div>
                     </div>
                     {u.latitude
-                      ? <span style={{ fontSize:"10px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>📍</span>
-                      : <span style={{ fontSize:"10px", color:"var(--text-3)" }}>—</span>
+                      ? <span style={{ fontSize:"12px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>📍</span>
+                      : <span style={{ fontSize:"12px", color:"var(--text-3)" }}>—</span>
                     }
                   </div>
                 </div>
               ))}
 
               {otherUsersArr.filter(u => u.role !== "driver").length === 0 && (
-                <div style={{ textAlign:"center", fontSize:"11px", color:"var(--text-3)", padding:"12px" }}>No other students online</div>
+                <div style={{ textAlign:"center", fontSize:"13px", color:"var(--text-3)", padding:"12px" }}>No other students online</div>
               )}
             </div>
           )}
@@ -629,7 +629,7 @@ export default function StudentPage() {
               borderRadius:"20px", padding:"3px 10px",
             }}>
               <span className="live-dot" style={{ width:"6px", height:"6px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-              <span style={{ fontSize:"11px", color:"var(--text-2)", fontFamily:"var(--font-mono)" }}>
+              <span style={{ fontSize:"13px", color:"var(--text-2)", fontFamily:"var(--font-mono)" }}>
                 {1 + otherUsersArr.length} online
               </span>
             </div>
@@ -641,7 +641,7 @@ export default function StudentPage() {
             background:"linear-gradient(135deg, rgba(99,102,241,0.2), rgba(99,102,241,0.1))",
             border:"1px solid rgba(99,102,241,0.3)",
             borderRadius:"8px", padding:"7px 14px",
-            color:"#a5b4fc", fontSize:"12px", fontWeight:600,
+            color:"#a5b4fc", fontSize:"14px", fontWeight:600,
             fontFamily:"var(--font-display)", cursor:"pointer",
             transition:"all 0.2s",
           }}
@@ -689,7 +689,7 @@ export default function StudentPage() {
               color: sheetOpen && activeTab==="buses" ? "var(--amber)" : "var(--text-3)",
             }}>
               <span style={{ fontSize:"20px" }}>🚌</span>
-              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>
+              <span style={{ fontSize:"12px", fontWeight:600, fontFamily:"var(--font-display)" }}>
                 Buses {filteredBuses.length > 0 && `(${filteredBuses.length})`}
               </span>
             </button>
@@ -717,7 +717,7 @@ export default function StudentPage() {
               position:"relative",
             }}>
               <span style={{ fontSize:"20px" }}>👥</span>
-              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Online</span>
+              <span style={{ fontSize:"12px", fontWeight:600, fontFamily:"var(--font-display)" }}>Online</span>
               {otherUsersArr.filter(u=>u.role==="driver").length > 0 && (
                 <span style={{
                   position:"absolute", top:"6px", right:"18px",
@@ -734,7 +734,7 @@ export default function StudentPage() {
               color:"var(--red)",
             }}>
               <span style={{ fontSize:"20px" }}>🚪</span>
-              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
+              <span style={{ fontSize:"12px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
             </button>
           </div>
         )}

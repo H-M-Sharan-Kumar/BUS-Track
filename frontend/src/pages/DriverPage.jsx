@@ -229,14 +229,14 @@ export default function DriverPage() {
               boxShadow:"0 0 16px var(--amber-glow)",
             }}>🚗</div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"13px", color:"var(--text-1)" }}>Driver Dashboard</div>
-              <div style={{ fontSize:"11px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user?.name}</div>
+              <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"15px", color:"var(--text-1)" }}>Driver Dashboard</div>
+              <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{user?.name}</div>
             </div>
             <button onClick={handleLogout} style={{
               display:"flex", alignItems:"center", gap:"4px",
               background:"rgba(248,113,113,0.08)", border:"1px solid rgba(248,113,113,0.2)",
               borderRadius:"7px", padding:"5px 9px",
-              color:"var(--red)", fontSize:"10px", fontWeight:600, cursor:"pointer",
+              color:"var(--red)", fontSize:"12px", fontWeight:600, cursor:"pointer",
               transition:"all 0.2s",
             }}
               onMouseEnter={e=>{e.currentTarget.style.background="rgba(248,113,113,0.15)";}}
@@ -254,7 +254,7 @@ export default function DriverPage() {
             padding:"3px 10px",
           }}>
             <span className="live-dot" style={{ width:"6px", height:"6px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-            <span style={{ fontSize:"11px", color:"var(--text-2)", fontFamily:"var(--font-mono)" }}>{onlineCount + 1} online</span>
+            <span style={{ fontSize:"13px", color:"var(--text-2)", fontFamily:"var(--font-mono)" }}>{onlineCount + 1} online</span>
           </div>
         </div>
 
@@ -263,17 +263,17 @@ export default function DriverPage() {
 
           {/* ── GPS STATUS ── */}
           <div style={{ marginBottom:"12px" }}>
-            <div style={{ fontSize:"10px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>GPS Status</div>
+            <div style={{ fontSize:"12px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>GPS Status</div>
 
             {locationError ? (
               <div style={{ background:"var(--red-glow)", border:"1px solid rgba(248,113,113,0.25)", borderRadius:"10px", padding:"10px 12px" }}>
-                <div style={{ color:"var(--red)", fontSize:"12px" }}>⚠ {locationError}</div>
+                <div style={{ color:"var(--red)", fontSize:"14px" }}>⚠ {locationError}</div>
               </div>
             ) : location ? (
               <div style={{ background:"rgba(52,211,153,0.06)", border:"1px solid rgba(52,211,153,0.2)", borderRadius:"10px", padding:"10px 12px" }}>
                 <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"8px" }}>
                   <span className="live-dot" style={{ width:"7px", height:"7px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-                  <span style={{ fontSize:"10px", fontWeight:700, textTransform:"uppercase", letterSpacing:"1px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>GPS Active</span>
+                  <span style={{ fontSize:"12px", fontWeight:700, textTransform:"uppercase", letterSpacing:"1px", color:"var(--green)", fontFamily:"var(--font-mono)" }}>GPS Active</span>
                 </div>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"6px" }}>
                   {[
@@ -283,8 +283,8 @@ export default function DriverPage() {
                     { label:"ACC",  value: accuracy ? `±${Math.round(accuracy)}m` : "—" },
                   ].map(s => (
                     <div key={s.label} style={{ background:"rgba(0,0,0,0.3)", borderRadius:"7px", padding:"6px 8px" }}>
-                      <div style={{ fontSize:"9px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
-                      <div style={{ fontFamily:"var(--font-mono)", fontSize:"11px", fontWeight:600, color:"var(--text-1)", marginTop:"2px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{s.value}</div>
+                      <div style={{ fontSize:"11px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
+                      <div style={{ fontFamily:"var(--font-mono)", fontSize:"13px", fontWeight:600, color:"var(--text-1)", marginTop:"2px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{s.value}</div>
                     </div>
                   ))}
                 </div>
@@ -292,22 +292,22 @@ export default function DriverPage() {
             ) : (
               <div style={{ background:"rgba(245,166,35,0.06)", border:"1px solid rgba(245,166,35,0.2)", borderRadius:"10px", padding:"10px 12px", display:"flex", alignItems:"center", gap:"8px" }}>
                 <span className="live-dot" style={{ width:"7px", height:"7px", borderRadius:"50%", background:"var(--amber)", display:"inline-block" }}/>
-                <span style={{ fontSize:"12px", color:"var(--amber)" }}>Acquiring GPS…</span>
+                <span style={{ fontSize:"14px", color:"var(--amber)" }}>Acquiring GPS…</span>
               </div>
             )}
           </div>
 
           {/* ── BUS SELECTOR ── */}
           <div style={{ marginBottom:"12px" }}>
-            <div style={{ fontSize:"10px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>Select Bus</div>
+            <div style={{ fontSize:"12px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>Select Bus</div>
 
             {busLoading ? (
-              <div style={{ color:"var(--text-3)", fontSize:"12px", textAlign:"center", padding:"16px" }}>Loading buses…</div>
+              <div style={{ color:"var(--text-3)", fontSize:"14px", textAlign:"center", padding:"16px" }}>Loading buses…</div>
             ) : buses.length === 0 ? (
               <div style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"10px", padding:"14px", textAlign:"center" }}>
                 <div style={{ fontSize:"24px", marginBottom:"4px" }}>🚌</div>
-                <div style={{ fontSize:"12px", color:"var(--text-3)" }}>No buses assigned</div>
-                <div style={{ fontSize:"10px", color:"var(--text-3)", marginTop:"2px" }}>Contact admin</div>
+                <div style={{ fontSize:"14px", color:"var(--text-3)" }}>No buses assigned</div>
+                <div style={{ fontSize:"12px", color:"var(--text-3)", marginTop:"2px" }}>Contact admin</div>
               </div>
             ) : (
               <div style={{ display:"flex", flexDirection:"column", gap:"6px" }}>
@@ -329,11 +329,11 @@ export default function DriverPage() {
                         <div style={{
                           width:"30px", height:"30px", borderRadius:"8px", flexShrink:0,
                           background: isSelected ? "linear-gradient(135deg,var(--amber),var(--amber-dim))" : "var(--carbon-4)",
-                          display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px",
+                          display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px",
                         }}>🚌</div>
                         <div style={{ flex:1, minWidth:0 }}>
-                          <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"12px", color: isSelected ? "var(--amber)" : "var(--text-1)" }}>{bus.bus_number}</div>
-                          <div style={{ fontSize:"10px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{bus.route_name || "No route"}</div>
+                          <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px", color: isSelected ? "var(--amber)" : "var(--text-1)" }}>{bus.bus_number}</div>
+                          <div style={{ fontSize:"12px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{bus.route_name || "No route"}</div>
                         </div>
                         {isSelected && (
                           <div style={{ width:"8px", height:"8px", borderRadius:"50%", background:"var(--amber)", boxShadow:"0 0 8px var(--amber)", flexShrink:0 }}/>
@@ -348,7 +348,7 @@ export default function DriverPage() {
 
           {/* ── TRIP CONTROL ── */}
           <div>
-            <div style={{ fontSize:"10px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>Trip Control</div>
+            <div style={{ fontSize:"12px", fontWeight:700, letterSpacing:"1.2px", textTransform:"uppercase", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginBottom:"8px" }}>Trip Control</div>
 
             {tripActive ? (
               <div>
@@ -360,7 +360,7 @@ export default function DriverPage() {
                 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"10px" }}>
                     <span className="live-dot" style={{ width:"8px", height:"8px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-                    <span style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"12px", color:"var(--green)", textTransform:"uppercase", letterSpacing:"0.5px" }}>Trip Active</span>
+                    <span style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px", color:"var(--green)", textTransform:"uppercase", letterSpacing:"0.5px" }}>Trip Active</span>
                   </div>
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:"6px", marginBottom:"8px" }}>
                     {[
@@ -369,13 +369,13 @@ export default function DriverPage() {
                       { label:"SPD",   value: speed ?? "—", color:"var(--amber)" },
                     ].map(s => (
                       <div key={s.label} style={{ background:"rgba(0,0,0,0.3)", borderRadius:"7px", padding:"7px 5px", textAlign:"center" }}>
-                        <div style={{ fontSize:"8px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
+                        <div style={{ fontSize:"10px", fontWeight:700, letterSpacing:"0.8px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>{s.label}</div>
                         <div style={{ fontFamily:"var(--font-mono)", fontWeight:700, fontSize:"15px", color:s.color, lineHeight:1, marginTop:"3px" }}>{s.value}</div>
                       </div>
                     ))}
                   </div>
                   {lastPing && (
-                    <div style={{ fontSize:"10px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>
+                    <div style={{ fontSize:"12px", color:"var(--text-3)", textAlign:"center", fontFamily:"var(--font-mono)" }}>
                       Last ping {lastPing.toLocaleTimeString()}
                     </div>
                   )}
@@ -385,7 +385,7 @@ export default function DriverPage() {
                   width:"100%", padding:"12px",
                   background:"linear-gradient(135deg, #ef4444, #b91c1c)",
                   border:"none", borderRadius:"10px",
-                  color:"#fff", fontSize:"13px", fontWeight:700,
+                  color:"#fff", fontSize:"15px", fontWeight:700,
                   fontFamily:"var(--font-display)", cursor:"pointer",
                   boxShadow:"0 4px 20px rgba(239,68,68,0.3)",
                   display:"flex", alignItems:"center", justifyContent:"center", gap:"8px",
@@ -406,11 +406,11 @@ export default function DriverPage() {
                   borderRadius:"10px", padding:"10px 12px", marginBottom:"8px", textAlign:"center",
                 }}>
                   {!selectedBus ? (
-                    <div style={{ fontSize:"11px", color:"var(--text-3)" }}>← Select a bus above</div>
+                    <div style={{ fontSize:"13px", color:"var(--text-3)" }}>← Select a bus above</div>
                   ) : !location ? (
-                    <div style={{ fontSize:"11px", color:"var(--amber)" }}>Waiting for GPS signal…</div>
+                    <div style={{ fontSize:"13px", color:"var(--amber)" }}>Waiting for GPS signal…</div>
                   ) : (
-                    <div style={{ fontSize:"11px", color:"var(--amber)", fontWeight:600 }}>
+                    <div style={{ fontSize:"13px", color:"var(--amber)", fontWeight:600 }}>
                       📡 Ready · {selectedBusObj?.bus_number}
                     </div>
                   )}
@@ -423,7 +423,7 @@ export default function DriverPage() {
                     : "var(--carbon-3)",
                   border:"none", borderRadius:"10px",
                   color: canStart ? "#0a0600" : "var(--text-3)",
-                  fontSize:"13px", fontWeight:700,
+                  fontSize:"15px", fontWeight:700,
                   fontFamily:"var(--font-display)", letterSpacing:"0.3px",
                   cursor: canStart ? "pointer" : "not-allowed",
                   boxShadow: canStart ? "0 4px 20px var(--amber-glow-strong)" : "none",
@@ -439,7 +439,7 @@ export default function DriverPage() {
               </div>
             )}
 
-            <div style={{ marginTop:"10px", textAlign:"center", fontSize:"10px", color:"var(--text-3)", fontFamily:"var(--font-mono)", lineHeight:1.6 }}>
+            <div style={{ marginTop:"10px", textAlign:"center", fontSize:"12px", color:"var(--text-3)", fontFamily:"var(--font-mono)", lineHeight:1.6 }}>
               Broadcasts every <span style={{ color:"var(--text-2)", fontWeight:600 }}>4s</span> to all students
             </div>
           </div>
@@ -460,14 +460,14 @@ export default function DriverPage() {
               background: tripActive ? "var(--green)" : "var(--text-3)",
               boxShadow: tripActive ? "0 0 10px var(--green)" : "none",
             }} className={tripActive ? "live-dot" : ""}/>
-            <span style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px", color:"var(--text-1)" }}>
+            <span style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px", color:"var(--text-1)" }}>
               {tripActive ? "Broadcasting Live" : "Map View"}
             </span>
             {tripActive && selectedBusObj && (
               <span style={{
                 background:"rgba(245,166,35,0.15)", border:"1px solid rgba(245,166,35,0.3)",
                 borderRadius:"6px", padding:"2px 8px",
-                fontSize:"11px", fontWeight:700, color:"var(--amber)",
+                fontSize:"13px", fontWeight:700, color:"var(--amber)",
                 fontFamily:"var(--font-mono)",
               }}>{selectedBusObj.bus_number}</span>
             )}
@@ -479,13 +479,13 @@ export default function DriverPage() {
               background:"var(--carbon-3)", border:"1px solid var(--border)",
               borderRadius:"8px", padding:"5px 10px",
             }}>
-              <span style={{ fontSize:"11px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
+              <span style={{ fontSize:"13px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
                 {location[0].toFixed(4)}, {location[1].toFixed(4)}
               </span>
               {speed != null && (
                 <>
                   <span style={{ width:"1px", height:"12px", background:"var(--border)", display:"inline-block" }}/>
-                  <span style={{ fontSize:"11px", color:"var(--amber)", fontFamily:"var(--font-mono)", fontWeight:600 }}>{speed} km/h</span>
+                  <span style={{ fontSize:"13px", color:"var(--amber)", fontFamily:"var(--font-mono)", fontWeight:600 }}>{speed} km/h</span>
                 </>
               )}
             </div>
@@ -513,8 +513,8 @@ export default function DriverPage() {
                 boxShadow:"0 4px 20px rgba(52,211,153,0.2)",
               }}>
                 <span className="live-dot" style={{ width:"8px", height:"8px", borderRadius:"50%", background:"var(--green)", display:"inline-block" }}/>
-                <span style={{ fontSize:"11px", fontWeight:700, color:"var(--green)", fontFamily:"var(--font-mono)", letterSpacing:"1px", textTransform:"uppercase" }}>Broadcasting</span>
-                <span style={{ fontSize:"11px", fontFamily:"var(--font-mono)", color:"var(--text-3)" }}>· {fmt(elapsed)}</span>
+                <span style={{ fontSize:"13px", fontWeight:700, color:"var(--green)", fontFamily:"var(--font-mono)", letterSpacing:"1px", textTransform:"uppercase" }}>Broadcasting</span>
+                <span style={{ fontSize:"13px", fontFamily:"var(--font-mono)", color:"var(--text-3)" }}>· {fmt(elapsed)}</span>
               </div>
             )}
 
@@ -529,10 +529,10 @@ export default function DriverPage() {
                 <Marker position={location} icon={driverMapIcon}>
                   <Popup>
                     <div style={{ minWidth:"150px" }}>
-                      <div style={{ fontWeight:700, color:"var(--amber)", marginBottom:"6px", fontSize:"14px" }}>🚗 {user?.name}</div>
-                      <div style={{ fontSize:"11px", color:"#888" }}>{location[0].toFixed(5)}, {location[1].toFixed(5)}</div>
-                      {speed != null && <div style={{ fontSize:"11px", color:"#888", marginTop:"2px" }}>{speed} km/h</div>}
-                      {tripActive && <div style={{ fontSize:"11px", color:"#22c55e", fontWeight:"bold", marginTop:"4px" }}>● Live Broadcasting</div>}
+                      <div style={{ fontWeight:700, color:"var(--amber)", marginBottom:"6px", fontSize:"16px" }}>🚗 {user?.name}</div>
+                      <div style={{ fontSize:"13px", color:"#888" }}>{location[0].toFixed(5)}, {location[1].toFixed(5)}</div>
+                      {speed != null && <div style={{ fontSize:"13px", color:"#888", marginTop:"2px" }}>{speed} km/h</div>}
+                      {tripActive && <div style={{ fontSize:"13px", color:"#22c55e", fontWeight:"bold", marginTop:"4px" }}>● Live Broadcasting</div>}
                     </div>
                   </Popup>
                 </Marker>
@@ -556,7 +556,7 @@ export default function DriverPage() {
               color: controlsOpen ? "var(--amber)" : "var(--text-3)",
             }}>
               <span style={{ fontSize:"20px" }}>⚙️</span>
-              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Controls</span>
+              <span style={{ fontSize:"12px", fontWeight:600, fontFamily:"var(--font-display)" }}>Controls</span>
             </button>
 
             {/* Big start/stop button */}
@@ -568,7 +568,7 @@ export default function DriverPage() {
                   ? "linear-gradient(135deg,var(--amber),var(--amber-dim))"
                   : "var(--carbon-3)",
               color: tripActive ? "#fff" : canStart ? "#0a0600" : "var(--text-3)",
-              fontFamily:"var(--font-display)", fontWeight:800, fontSize:"14px",
+              fontFamily:"var(--font-display)", fontWeight:800, fontSize:"16px",
               boxShadow: tripActive ? "0 4px 16px rgba(239,68,68,0.4)" : canStart ? "0 4px 16px var(--amber-glow-strong)" : "none",
             }}>
               {tripActive ? `⏹ End · ${fmt(elapsed)}` : "▶ Start Trip"}
@@ -580,7 +580,7 @@ export default function DriverPage() {
               background:"none", border:"none", cursor:"pointer", gap:"3px", color:"var(--red)",
             }}>
               <span style={{ fontSize:"20px" }}>🚪</span>
-              <span style={{ fontSize:"10px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
+              <span style={{ fontSize:"12px", fontWeight:600, fontFamily:"var(--font-display)" }}>Logout</span>
             </button>
           </div>
         )}

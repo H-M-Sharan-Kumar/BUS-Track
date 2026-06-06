@@ -148,9 +148,9 @@ export default function AdminPage() {
   const inputStyle = {
     width:"100%", background:"var(--carbon-3)", border:"1px solid var(--border-hi)",
     borderRadius:"8px", padding:"10px 12px", color:"var(--text-1)",
-    fontSize:"13px", fontFamily:"var(--font-body)", outline:"none", marginTop:"4px",
+    fontSize:"15px", fontFamily:"var(--font-body)", outline:"none", marginTop:"4px",
   };
-  const labelStyle = { fontSize:"11px", fontWeight:600, color:"var(--text-3)", textTransform:"uppercase", letterSpacing:"0.5px", fontFamily:"var(--font-mono)" };
+  const labelStyle = { fontSize:"13px", fontWeight:600, color:"var(--text-3)", textTransform:"uppercase", letterSpacing:"0.5px", fontFamily:"var(--font-mono)" };
 
   return (
     <div style={{ minHeight:"100svh", background:"var(--carbon)", fontFamily:"var(--font-body)", color:"var(--text-1)" }}>
@@ -169,11 +169,11 @@ export default function AdminPage() {
         }}>🛡️</div>
         <div style={{ flex:1, minWidth:0 }}>
           <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"15px" }}>Admin Dashboard</div>
-          <div style={{ fontSize:"11px", color:"var(--text-3)" }}>{user?.name}</div>
+          <div style={{ fontSize:"13px", color:"var(--text-3)" }}>{user?.name}</div>
         </div>
         <button onClick={handleLogout} style={{
           background:"rgba(248,113,113,0.08)", border:"1px solid rgba(248,113,113,0.2)",
-          borderRadius:"8px", padding:"7px 12px", color:"var(--red)", fontSize:"12px", fontWeight:600, cursor:"pointer",
+          borderRadius:"8px", padding:"7px 12px", color:"var(--red)", fontSize:"14px", fontWeight:600, cursor:"pointer",
         }}>🚪 Logout</button>
       </div>
 
@@ -188,7 +188,7 @@ export default function AdminPage() {
                 <div key={s.label} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"14px", padding:"16px" }}>
                   <div style={{ fontSize:"22px", marginBottom:"6px" }}>{s.icon}</div>
                   <div style={{ fontFamily:"var(--font-mono)", fontSize:"28px", fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
-                  <div style={{ fontSize:"11px", color:"var(--text-3)", marginTop:"4px", fontWeight:600 }}>{s.label}</div>
+                  <div style={{ fontSize:"13px", color:"var(--text-3)", marginTop:"4px", fontWeight:600 }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -201,7 +201,7 @@ export default function AdminPage() {
                   border:`1px solid ${tab===t.k ? "var(--amber)" : "var(--border)"}`,
                   background: tab===t.k ? "rgba(245,166,35,0.12)" : "var(--carbon-2)",
                   color: tab===t.k ? "var(--amber)" : "var(--text-2)",
-                  fontWeight:700, fontFamily:"var(--font-display)", fontSize:"13px",
+                  fontWeight:700, fontFamily:"var(--font-display)", fontSize:"15px",
                 }}>{t.l}</button>
               ))}
             </div>
@@ -212,7 +212,7 @@ export default function AdminPage() {
                 <button onClick={() => setShowAddBus(true)} style={{
                   marginBottom:"14px", background:"linear-gradient(135deg,var(--amber),var(--amber-dim))",
                   border:"none", borderRadius:"10px", padding:"10px 18px", color:"#0a0600",
-                  fontWeight:700, fontFamily:"var(--font-display)", fontSize:"13px", cursor:"pointer",
+                  fontWeight:700, fontFamily:"var(--font-display)", fontSize:"15px", cursor:"pointer",
                 }}>+ Add New Bus</button>
 
                 <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
@@ -228,8 +228,8 @@ export default function AdminPage() {
                         <div style={{ width:"44px", height:"44px", borderRadius:"10px", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"20px" }}>🚌</div>
                       )}
                       <div style={{ flex:1, minWidth:"120px" }}>
-                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px" }}>{b.bus_number}</div>
-                        <div style={{ fontSize:"11px", color:"var(--text-3)" }}>
+                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px" }}>{b.bus_number}</div>
+                        <div style={{ fontSize:"13px", color:"var(--text-3)" }}>
                           {(b.driver_name || b.driver_name) ? `Driver: ${b.driver_name}` : "No driver"} · {b.route_name || "No route"} · {b.capacity} seats
                         </div>
                       </div>
@@ -240,11 +240,11 @@ export default function AdminPage() {
                         borderRadius:"8px", padding:"5px 10px",
                       }}>
                         <span className={b.isLive ? "live-dot" : ""} style={{ width:"7px", height:"7px", borderRadius:"50%", background: b.isLive ? "var(--green)" : "var(--text-3)" }}/>
-                        <span style={{ fontSize:"10px", fontWeight:700, fontFamily:"var(--font-mono)", color: b.isLive ? "var(--green)" : "var(--text-3)" }}>{b.isLive ? "LIVE" : "OFFLINE"}</span>
+                        <span style={{ fontSize:"12px", fontWeight:700, fontFamily:"var(--font-mono)", color: b.isLive ? "var(--green)" : "var(--text-3)" }}>{b.isLive ? "LIVE" : "OFFLINE"}</span>
                       </div>
                       <select value={b.driver_id || ""} onChange={(e) => assignDriver(b.id, e.target.value)} style={{
                         background:"var(--carbon-3)", border:"1px solid var(--border-hi)", borderRadius:"8px",
-                        padding:"7px 10px", color:"var(--text-1)", fontSize:"12px", cursor:"pointer", minWidth:"140px",
+                        padding:"7px 10px", color:"var(--text-1)", fontSize:"14px", cursor:"pointer", minWidth:"140px",
                       }}>
                         <option value="">— Link account —</option>
                         {drivers.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
@@ -269,7 +269,7 @@ export default function AdminPage() {
 
                 {/* Add stop form */}
                 <div style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"14px", padding:"16px", marginBottom:"20px" }}>
-                  <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"14px", marginBottom:"12px" }}>📍 Add a Stop</div>
+                  <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px", marginBottom:"12px" }}>📍 Add a Stop</div>
                   <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1.5fr 0.8fr", gap:"12px", alignItems:"end" }}>
                     <div>
                       <label style={labelStyle}>Stop Name</label>
@@ -287,10 +287,10 @@ export default function AdminPage() {
                   <div style={{ display:"flex", alignItems:"center", gap:"12px", marginTop:"14px" }}>
                     <button onClick={submitStop} disabled={savingStop} style={{
                       background:"linear-gradient(135deg,var(--amber),var(--amber-dim))", border:"none", borderRadius:"8px",
-                      padding:"9px 18px", color:"#0a0600", fontWeight:700, fontFamily:"var(--font-display)", fontSize:"13px",
+                      padding:"9px 18px", color:"#0a0600", fontWeight:700, fontFamily:"var(--font-display)", fontSize:"15px",
                       cursor: savingStop ? "wait" : "pointer", opacity: savingStop ? 0.6 : 1,
                     }}>{savingStop ? "Pinning…" : "+ Add Stop"}</button>
-                    {stopMsg && <span style={{ fontSize:"12px", color: stopMsg.startsWith("✓") ? "var(--green)" : "var(--text-3)" }}>{stopMsg}</span>}
+                    {stopMsg && <span style={{ fontSize:"14px", color: stopMsg.startsWith("✓") ? "var(--green)" : "var(--text-3)" }}>{stopMsg}</span>}
                   </div>
                 </div>
 
@@ -298,17 +298,17 @@ export default function AdminPage() {
                 <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
                   {stops.map((s, i) => (
                     <div key={s.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px" }}>
-                      <div style={{ width:"30px", height:"30px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"12px", fontWeight:700, fontFamily:"var(--font-mono)", color:"var(--amber)" }}>{s.stop_order ?? i + 1}</div>
+                      <div style={{ width:"30px", height:"30px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"14px", fontWeight:700, fontFamily:"var(--font-mono)", color:"var(--amber)" }}>{s.stop_order ?? i + 1}</div>
                       <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ fontWeight:600, fontSize:"13px" }}>{s.name}</div>
-                        <div style={{ fontSize:"11px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
+                        <div style={{ fontWeight:600, fontSize:"15px" }}>{s.name}</div>
+                        <div style={{ fontSize:"13px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
                           📍 {Number(s.latitude).toFixed(5)}, {Number(s.longitude).toFixed(5)} {s.eta_offset ? `· +${s.eta_offset} min` : ""}
                         </div>
                       </div>
                       <button onClick={() => deleteStop(s.id)} style={{ background:"none", border:"none", color:"var(--red)", cursor:"pointer", fontSize:"15px" }}>🗑️</button>
                     </div>
                   ))}
-                  {stops.length === 0 && <div style={{ textAlign:"center", padding:"30px", color:"var(--text-3)", fontSize:"13px" }}>No stops on this route yet</div>}
+                  {stops.length === 0 && <div style={{ textAlign:"center", padding:"30px", color:"var(--text-3)", fontSize:"15px" }}>No stops on this route yet</div>}
                 </div>
               </div>
             )}
@@ -320,11 +320,11 @@ export default function AdminPage() {
                   <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px" }}>
                     <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>{ROLE_EMOJI[u.role] || "👤"}</div>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontWeight:600, fontSize:"13px" }}>{u.name}</div>
-                      <div style={{ fontSize:"11px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
+                      <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                      <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
                     </div>
                     <span style={{
-                      fontSize:"10px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)",
+                      fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)",
                       color: u.role==="admin" ? "#EC4899" : u.role==="driver" ? "var(--amber)" : "#6366F1",
                       background: u.role==="admin" ? "rgba(236,72,153,0.1)" : u.role==="driver" ? "rgba(245,166,35,0.1)" : "rgba(99,102,241,0.1)",
                       padding:"4px 10px", borderRadius:"6px",

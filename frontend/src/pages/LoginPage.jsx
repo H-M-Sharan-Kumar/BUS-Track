@@ -135,8 +135,8 @@ export default function LoginPage() {
               borderRadius: "8px",
               width: "fit-content",
             }}>
-              <span style={{ fontSize: "14px" }}>{f.icon}</span>
-              <span style={{ fontSize: "13px", color: "var(--text-2)", fontFamily: "var(--font-mono)" }}>{f.label}</span>
+              <span style={{ fontSize:"16px" }}>{f.icon}</span>
+              <span style={{ fontSize:"15px", color: "var(--text-2)", fontFamily: "var(--font-mono)" }}>{f.label}</span>
             </div>
           ))}
         </div>
@@ -164,7 +164,7 @@ export default function LoginPage() {
                 }}>🚌</div>
                 <div>
                   <div style={{ fontFamily:"var(--font-display)", fontSize:"24px", fontWeight:800, color:"var(--text-1)" }}>BusTrack</div>
-                  <div style={{ fontSize:"12px", color:"var(--text-3)" }}>Real-time bus tracking</div>
+                  <div style={{ fontSize:"14px", color:"var(--text-3)" }}>Real-time bus tracking</div>
                 </div>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function LoginPage() {
               marginBottom: "8px",
               color: "var(--text-1)",
             }}>Sign in</h2>
-            <p style={{ color: "var(--text-3)", fontSize: "13px", marginBottom: "28px" }}>
+            <p style={{ color: "var(--text-3)", fontSize:"15px", marginBottom: "28px" }}>
               Enter your credentials to continue
             </p>
 
@@ -200,7 +200,7 @@ export default function LoginPage() {
               <div style={{
                 background: "var(--red-glow)", border: "1px solid rgba(248,113,113,0.3)",
                 borderRadius: "8px", padding: "10px 14px",
-                color: "var(--red)", fontSize: "13px", marginBottom: "20px",
+                color: "var(--red)", fontSize:"15px", marginBottom: "20px",
                 display: "flex", alignItems: "center", gap: "8px",
               }}>
                 <span>⚠</span> {error}
@@ -214,7 +214,7 @@ export default function LoginPage() {
               ].map((field) => (
                 <div key={field.key}>
                   <label style={{
-                    display: "block", fontSize: "11px", fontWeight: 600,
+                    display: "block", fontSize:"13px", fontWeight: 600,
                     textTransform: "uppercase", letterSpacing: "0.8px",
                     color: "var(--text-3)", marginBottom: "8px",
                     fontFamily: "var(--font-mono)",
@@ -232,7 +232,7 @@ export default function LoginPage() {
                       borderRadius: "10px",
                       padding: "12px 16px",
                       color: "var(--text-1)",
-                      fontSize: "14px",
+                      fontSize:"16px",
                       fontFamily: "var(--font-body)",
                       outline: "none",
                       transition: "border-color 0.2s, box-shadow 0.2s",
@@ -261,7 +261,7 @@ export default function LoginPage() {
                   borderRadius: "10px",
                   padding: "13px",
                   color: loading ? "var(--text-3)" : "#0a0600",
-                  fontSize: "14px",
+                  fontSize:"16px",
                   fontWeight: 700,
                   fontFamily: "var(--font-display)",
                   letterSpacing: "0.3px",
@@ -279,14 +279,14 @@ export default function LoginPage() {
 
             <div style={{
               textAlign: "center", marginTop: "24px",
-              fontSize: "13px", color: "var(--text-3)",
+              fontSize:"15px", color: "var(--text-3)",
             }}>
               No account?{" "}
               <button
                 onClick={() => navigate("/register")}
                 style={{
                   background: "none", border: "none", cursor: "pointer",
-                  color: "var(--amber)", fontWeight: 600, fontSize: "13px",
+                  color: "var(--amber)", fontWeight: 600, fontSize:"15px",
                 }}
               >
                 Register here
