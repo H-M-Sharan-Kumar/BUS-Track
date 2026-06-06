@@ -2,9 +2,18 @@ import Redis from "ioredis";
 import dotenv from "dotenv";
 dotenv.config();
 
-const redis = new Redis(process.env.REDIS_URL, {
-  tls: process.env.NODE_ENV === "production" ? {} : undefined,
-  retryStrategy: (times) => Math.min(times * 100, 3000),
+const url = process.env.REDIS_URL || "redis://localhost:6379";
+
+// Only use TLS if the URL explicitly asks for it (rediss://).
+// Railway's internal Redis uses plain redis:// — forcing TLS causes
+// endless connection retries that hang every Redis call.
+const useTls = url.startsWith("rediss://");
+
+const redis = new Redis(url, {
+  ...(useTls ? { tls: {} } : {}),
+  maxRetriesPerRequest: 2,        // don't let a command hang forever
+  enableReadyCheck: true,
+  retryStrategy: (times) => Math.min(times * 200, 2000),
 });
 
 redis.on("connect", () => console.log("✅ Redis connected"));

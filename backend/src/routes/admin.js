@@ -39,20 +39,28 @@ router.get("/buses", async (_req, res) => {
   try {
     const { rows } = await pool.query(
       `SELECT b.id, b.bus_number, b.capacity, b.is_active,
+              b.driver_name, b.driver_photo,
               r.name AS route_name,
-              u.name AS driver_name, u.id AS driver_id
+              u.id AS driver_id
        FROM buses b
        LEFT JOIN routes r ON r.id = b.route_id
        LEFT JOIN users u ON u.id = b.driver_id
        ORDER BY b.bus_number`
     );
-    // Check Redis for live position of each bus
-    const withStatus = await Promise.all(rows.map(async (b) => {
-      const cached = await redis.get(`bus:${b.id}:position`);
-      const live = cached ? JSON.parse(cached) : null;
-      return { ...b, isLive: !!live, livePosition: live };
-    }));
-    res.json({ buses: withStatus });
+
+    // Batch-fetch live status with one Redis round-trip (mget), guarded
+    let liveFlags = {};
+    try {
+      if (rows.length) {
+        const keys = rows.map((b) => `bus:${b.id}:position`);
+        const vals = await redis.mget(keys);
+        rows.forEach((b, i) => { liveFlags[b.id] = !!vals[i]; });
+      }
+    } catch {
+      // Redis unavailable — return buses without live flags rather than hang
+    }
+
+    res.json({ buses: rows.map((b) => ({ ...b, isLive: !!liveFlags[b.id] })) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
