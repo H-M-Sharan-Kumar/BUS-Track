@@ -31,12 +31,15 @@ export default function LoginPage() {
 
   return (
     <div style={{
+      height: isMobile ? "100svh" : "100svh",
       minHeight: "100svh",
       background: "var(--carbon)",
       display: "flex",
       flexDirection: isMobile ? "column" : "row",
       fontFamily: "var(--font-body)",
-      overflow: isMobile ? "auto" : "hidden",
+      overflowY: isMobile ? "auto" : "hidden",
+      overflowX: "hidden",
+      WebkitOverflowScrolling: "touch",
       position: "relative",
     }}>
 
@@ -145,8 +148,8 @@ export default function LoginPage() {
       {/* ── Right form panel ── */}
       <div style={{
         flex: 1, display: "flex", alignItems: "center", justifyContent: "center",
-        padding: isMobile ? "24px 16px" : "40px",
-        minHeight: isMobile ? "100svh" : "auto",
+        padding: isMobile ? "24px 16px 120px" : "40px",
+        minHeight: isMobile ? "auto" : "auto",
       }}>
         <div style={{ width: "100%", maxWidth: "420px" }} className="fade-in-up-2">
 

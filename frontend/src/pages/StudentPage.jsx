@@ -354,7 +354,7 @@ export default function StudentPage() {
         </div>
 
         {/* Tab content */}
-        <div style={{ flex:1, overflowY:"auto", padding:"0 12px 12px" }}>
+        <div style={{ flex:1, overflowY:"auto", padding: isMobile ? "0 12px 90px" : "0 12px 12px" }}>
 
           {/* ── Buses tab ── */}
           {activeTab === "buses" && (

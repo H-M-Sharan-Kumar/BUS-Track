@@ -259,7 +259,7 @@ export default function DriverPage() {
         </div>
 
         {/* Scrollable body */}
-        <div style={{ flex:1, overflowY:"auto", padding:"12px" }}>
+        <div style={{ flex:1, overflowY:"auto", padding: isMobile ? "12px 12px 90px" : "12px" }}>
 
           {/* ── GPS STATUS ── */}
           <div style={{ marginBottom:"12px" }}>

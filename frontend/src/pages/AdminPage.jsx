@@ -153,7 +153,7 @@ export default function AdminPage() {
   const labelStyle = { fontSize:"13px", fontWeight:600, color:"var(--text-3)", textTransform:"uppercase", letterSpacing:"0.5px", fontFamily:"var(--font-mono)" };
 
   return (
-    <div style={{ minHeight:"100svh", background:"var(--carbon)", fontFamily:"var(--font-body)", color:"var(--text-1)" }}>
+    <div style={{ height:"100svh", overflowY:"auto", WebkitOverflowScrolling:"touch", background:"var(--carbon)", fontFamily:"var(--font-body)", color:"var(--text-1)" }}>
 
       {/* Top bar */}
       <div style={{
@@ -177,7 +177,7 @@ export default function AdminPage() {
         }}>🚪 Logout</button>
       </div>
 
-      <div style={{ padding: isMobile ? "16px" : "24px", maxWidth:"1200px", margin:"0 auto" }}>
+      <div style={{ padding: isMobile ? "16px" : "24px", paddingBottom: "120px", maxWidth:"1200px", margin:"0 auto" }}>
         {loading ? (
           <div style={{ textAlign:"center", padding:"60px", color:"var(--text-3)" }}>Loading dashboard…</div>
         ) : (

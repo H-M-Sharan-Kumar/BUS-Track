@@ -39,6 +39,7 @@ export default function RegisterPage() {
       background: "var(--carbon)",
       display: "flex", alignItems: "flex-start", justifyContent: "center",
       padding: isMobile ? "16px" : "24px",
+      paddingBottom: "120px",
       overflowY: "auto",
       WebkitOverflowScrolling: "touch",
       fontFamily: "var(--font-body)",
