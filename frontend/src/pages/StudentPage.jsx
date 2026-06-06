@@ -23,6 +23,8 @@ export default function StudentPage() {
   const [locationError, setLocationError] = useState(null);
   const [otherUsers, setOtherUsers] = useState({}); // { userId: {id,name,role,lat,lng} }
   const [trackedBusId, setTrackedBusId] = useState(null);
+  const [trackedStops, setTrackedStops] = useState([]);
+  const [arrivalAlert, setArrivalAlert] = useState(null);
   const [loadingBuses, setLoadingBuses] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -100,15 +102,34 @@ export default function StudentPage() {
       );
     });
 
+    // Bus approaching a stop — show arrival banner
+    socket.on("bus:approaching", (data) => {
+      setArrivalAlert({
+        stop: data.stop_name,
+        eta: data.eta_min,
+        at: Date.now(),
+      });
+      setTimeout(() => setArrivalAlert(null), 9000);
+    });
+
     return () => {
       socket.off("users:online");
       socket.off("user:joined");
       socket.off("user:location");
       socket.off("user:left");
       socket.off("bus:position");
+      socket.off("bus:approaching");
       socket.disconnect();
     };
   }, [user?.id]);
+
+  // ── Fetch stops for the tracked bus ──────────────────────
+  useEffect(() => {
+    if (!trackedBusId) { setTrackedStops([]); return; }
+    api.get(`/stops/bus/${trackedBusId}`)
+      .then((r) => setTrackedStops(r.data.stops || []))
+      .catch(() => setTrackedStops([]));
+  }, [trackedBusId]);
 
   // ── Bus room tracking ─────────────────────────────────────
   useEffect(() => {
@@ -152,6 +173,22 @@ export default function StudentPage() {
   );
   const trackedBus = busesWithETA.find((b) => b.id === trackedBusId);
 
+  // ETA from the tracked bus to each of its stops
+  const stopsWithETA = useMemo(() => {
+    if (!trackedBus?.latitude) return trackedStops.map((s) => ({ ...s, _eta: null }));
+    const R = 6371, toRad = (d) => (d * Math.PI) / 180;
+    const kmh = trackedBus.speed && trackedBus.speed > 2 ? trackedBus.speed : 20;
+    return trackedStops.map((s) => {
+      const dLat = toRad(s.latitude - trackedBus.latitude);
+      const dLng = toRad(s.longitude - trackedBus.longitude);
+      const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(trackedBus.latitude)) * Math.cos(toRad(s.latitude)) * Math.sin(dLng / 2) ** 2;
+      const km = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      const etaMin = Math.round((km / kmh) * 60);
+      return { ...s, _eta: { km, etaMin } };
+    });
+  }, [trackedStops, trackedBus]);
+
   const S = {
     sidebar: isMobile ? {
       // Mobile: bottom sheet
@@ -183,6 +220,29 @@ export default function StudentPage() {
 
   return (
     <div style={{ display:"flex", height:"100svh", background:"var(--carbon)", overflow:"hidden", fontFamily:"var(--font-body)", flexDirection: isMobile ? "column" : "row" }}>
+
+      {/* ── Arrival alert banner ── */}
+      {arrivalAlert && (
+        <div style={{
+          position:"fixed", top: isMobile ? "12px" : "16px", left:"50%", transform:"translateX(-50%)",
+          zIndex:2000, display:"flex", alignItems:"center", gap:"12px",
+          background:"linear-gradient(135deg, #16A34A, #15803D)",
+          borderRadius:"12px", padding:"12px 18px",
+          boxShadow:"0 8px 30px rgba(34,197,94,0.4)",
+          maxWidth:"92vw",
+        }}>
+          <span style={{ fontSize:"22px" }}>🚌</span>
+          <div>
+            <div style={{ fontWeight:700, fontSize:"13px", color:"#fff", fontFamily:"var(--font-display)" }}>
+              Bus approaching {arrivalAlert.stop}
+            </div>
+            <div style={{ fontSize:"11px", color:"#DCFCE7" }}>
+              Arriving in about {arrivalAlert.eta < 1 ? "less than a minute" : `${arrivalAlert.eta} min`}
+            </div>
+          </div>
+          <button onClick={() => setArrivalAlert(null)} style={{ background:"none", border:"none", color:"#DCFCE7", fontSize:"18px", cursor:"pointer", marginLeft:"4px" }}>×</button>
+        </div>
+      )}
 
       {/* Mobile overlay when sheet open */}
       {isMobile && sheetOpen && (
@@ -337,6 +397,37 @@ export default function StudentPage() {
                       {!trackedBus.speed && " · est. 20 km/h"}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* ── Upcoming stops for tracked bus ── */}
+              {trackedBus && stopsWithETA.length > 0 && (
+                <div style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px", marginBottom:"4px" }}>
+                  <div style={{ ...S.sectionLabel, marginBottom:"10px" }}>🛣️ Upcoming Stops</div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:"0" }}>
+                    {stopsWithETA.map((s, i) => (
+                      <div key={s.id} style={{ display:"flex", alignItems:"center", gap:"10px", padding:"6px 0" }}>
+                        {/* timeline dot */}
+                        <div style={{ display:"flex", flexDirection:"column", alignItems:"center", alignSelf:"stretch" }}>
+                          <div style={{ width:"10px", height:"10px", borderRadius:"50%", background: i===0 ? "var(--green)" : "var(--carbon-5)", border: i===0 ? "2px solid var(--green)" : "2px solid var(--border-hi)", flexShrink:0 }}/>
+                          {i < stopsWithETA.length - 1 && <div style={{ width:"2px", flex:1, minHeight:"14px", background:"var(--border-hi)" }}/>}
+                        </div>
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <div style={{ fontSize:"12px", fontWeight:600, color:"var(--text-1)" }}>{s.name}</div>
+                        </div>
+                        {s._eta && (
+                          <div style={{ textAlign:"right", flexShrink:0 }}>
+                            <div style={{ fontSize:"12px", fontWeight:700, fontFamily:"var(--font-mono)", color: s._eta.etaMin < 3 ? "var(--green)" : "var(--sky)" }}>
+                              {s._eta.etaMin < 1 ? "<1" : s._eta.etaMin} min
+                            </div>
+                            <div style={{ fontSize:"9px", color:"var(--text-3)", fontFamily:"var(--font-mono)" }}>
+                              {s._eta.km < 1 ? `${(s._eta.km*1000).toFixed(0)}m` : `${s._eta.km.toFixed(1)}km`}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

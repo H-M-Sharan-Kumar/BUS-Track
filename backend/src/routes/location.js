@@ -13,6 +13,46 @@ const haversineSQL = (lat, lng) => `
     POWER(SIN(RADIANS(longitude - ${lng}) / 2), 2)
   ))`;
 
+// Haversine distance in metres (JS)
+function distM(lat1, lng1, lat2, lng2) {
+  const R = 6371000, toRad = (d) => (d * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1), dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+// Check if the bus is approaching any of its stops; emit an alert once per stop per ~hour
+async function checkStopProximity(bus_id, lat, lng, speed) {
+  try {
+    const { rows: stops } = await pool.query(
+      `SELECT s.id, s.name, s.latitude, s.longitude
+       FROM buses b
+       JOIN route_stops rs ON rs.route_id = b.route_id
+       JOIN stops s ON s.id = rs.stop_id
+       WHERE b.id = $1`,
+      [bus_id]
+    );
+    for (const stop of stops) {
+      const d = distM(lat, lng, stop.latitude, stop.longitude);
+      if (d <= 800) {
+        // de-dup: only alert once per bus+stop within 30 min
+        const key = `alert:${bus_id}:${stop.id}`;
+        const already = await redis.get(key);
+        if (already) continue;
+        await redis.setex(key, 1800, "1");
+        const kmh = speed && speed > 2 ? speed : 20;
+        const etaMin = Math.max(0, Math.round((d / 1000 / kmh) * 60));
+        await redis.publish("stop:approaching", JSON.stringify({
+          bus_id, stop_name: stop.name, distance_m: Math.round(d), eta_min: etaMin,
+        }));
+      }
+    }
+  } catch (e) {
+    console.error("Stop proximity error:", e.message);
+  }
+}
+
 // POST /api/location/update — driver sends GPS ping
 router.post("/update", authenticate, requireRole("driver"), async (req, res) => {
   const { bus_id, trip_id, latitude, longitude, speed, heading } = req.body;
@@ -27,6 +67,8 @@ router.post("/update", authenticate, requireRole("driver"), async (req, res) => 
     const posData = JSON.stringify({ latitude, longitude, speed, heading, updated_at: new Date() });
     await redis.setex(`bus:${bus_id}:position`, 30, posData);
     await redis.publish("gps:update", JSON.stringify({ bus_id, latitude, longitude, speed, heading }));
+    // Fire-and-forget proximity check (don't block the response)
+    checkStopProximity(bus_id, latitude, longitude, speed);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

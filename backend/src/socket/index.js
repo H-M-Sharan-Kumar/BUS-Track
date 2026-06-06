@@ -68,16 +68,19 @@ export function initSocket(httpServer) {
     });
   });
 
-  // ── Redis pub/sub for GPS bus updates ─────────────────
-  subscriber.subscribe("gps:update", (err) => {
+  // ── Redis pub/sub for GPS bus updates + stop alerts ───
+  subscriber.subscribe("gps:update", "stop:approaching", (err) => {
     if (err) console.error("Redis subscribe error:", err);
-    else console.log("✅ Subscribed to gps:update channel");
+    else console.log("✅ Subscribed to gps:update + stop:approaching channels");
   });
 
   subscriber.on("message", (channel, message) => {
+    const data = JSON.parse(message);
     if (channel === "gps:update") {
-      const data = JSON.parse(message);
       io.to(`bus:${data.bus_id}`).emit("bus:position", data);
+    } else if (channel === "stop:approaching") {
+      // Notify students tracking this bus that it's nearing a stop
+      io.to(`bus:${data.bus_id}`).emit("bus:approaching", data);
     }
   });
 

@@ -57,13 +57,15 @@ CREATE TABLE IF NOT EXISTS route_stops (
 -- BUSES
 -- ============================================================
 CREATE TABLE IF NOT EXISTS buses (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  bus_number VARCHAR(20) UNIQUE NOT NULL,
-  capacity   INT DEFAULT 50,
-  route_id   UUID REFERENCES routes(id),
-  driver_id  UUID REFERENCES users(id),
-  is_active  BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  bus_number   VARCHAR(20) UNIQUE NOT NULL,
+  capacity     INT DEFAULT 50,
+  route_id     UUID REFERENCES routes(id),
+  driver_id    UUID REFERENCES users(id),
+  driver_name  VARCHAR(100),
+  driver_photo TEXT,
+  is_active    BOOLEAN DEFAULT TRUE,
+  created_at   TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ============================================================

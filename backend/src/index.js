@@ -13,6 +13,7 @@ import locationRoutes from "./routes/location.js";
 import busRoutes from "./routes/buses.js";
 import tripRoutes from "./routes/trips.js";
 import adminRoutes from "./routes/admin.js";
+import stopRoutes from "./routes/stops.js";
 import { initSocket } from "./socket/index.js";
 
 const app = express();
@@ -43,6 +44,7 @@ app.use("/api/location", locationRoutes);
 app.use("/api/buses", busRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/stops", stopRoutes);
 
 // ── SPA fallback — send index.html for all non-API routes ──
 app.get("*", (req, res) => {
