@@ -35,13 +35,14 @@ export default function RegisterPage() {
 
   return (
     <div style={{
-      minHeight: "100svh",
+      height: "100svh",
       background: "var(--carbon)",
       display: "flex", alignItems: "flex-start", justifyContent: "center",
       padding: isMobile ? "16px" : "24px",
       overflowY: "auto",
+      WebkitOverflowScrolling: "touch",
       fontFamily: "var(--font-body)",
-      position: "relative", overflow: "hidden",
+      position: "relative",
     }}>
       {/* Background */}
       <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
