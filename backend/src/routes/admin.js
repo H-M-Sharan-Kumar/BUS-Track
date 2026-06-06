@@ -38,14 +38,14 @@ router.get("/stats", async (_req, res) => {
 router.get("/buses", async (_req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT b.id, b.bus_number, b.capacity, b.is_active,
+      `SELECT b.id, b.bus_number, b.number_plate, b.capacity, b.is_active,
               b.driver_name, b.driver_photo,
               r.name AS route_name,
               u.id AS driver_id
        FROM buses b
        LEFT JOIN routes r ON r.id = b.route_id
        LEFT JOIN users u ON u.id = b.driver_id
-       ORDER BY b.bus_number`
+       ORDER BY LENGTH(b.bus_number), b.bus_number`
     );
 
     // Batch-fetch live status with one Redis round-trip (mget), guarded
@@ -70,7 +70,8 @@ router.get("/buses", async (_req, res) => {
 router.get("/users", async (_req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT id, name, email, role, phone, created_at
+      `SELECT id, name, email, role, phone,
+              usn, academic_year, branch, roll_no, section, created_at
        FROM users ORDER BY role, created_at DESC`
     );
     res.json({ users: rows });
@@ -107,14 +108,14 @@ router.patch("/buses/:id/assign", async (req, res) => {
 
 // POST /api/admin/buses — create a new bus with driver name + photo
 router.post("/buses", async (req, res) => {
-  const { bus_number, capacity, route_id, driver_id, driver_name, driver_photo } = req.body;
+  const { bus_number, number_plate, capacity, route_id, driver_id, driver_name, driver_photo } = req.body;
   if (!bus_number) return res.status(400).json({ error: "bus_number required" });
   try {
     const { rows } = await pool.query(
-      `INSERT INTO buses (bus_number, capacity, route_id, driver_id, driver_name, driver_photo, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, true)
+      `INSERT INTO buses (bus_number, number_plate, capacity, route_id, driver_id, driver_name, driver_photo, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, true)
        RETURNING id, bus_number`,
-      [bus_number, capacity || 50, route_id || null, driver_id || null, driver_name || null, driver_photo || null]
+      [bus_number, number_plate || null, capacity || 50, route_id || null, driver_id || null, driver_name || null, driver_photo || null]
     );
     res.status(201).json({ bus: rows[0] });
   } catch (err) {

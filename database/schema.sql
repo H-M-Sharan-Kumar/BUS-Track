@@ -13,6 +13,11 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash TEXT NOT NULL,
   role          user_role NOT NULL DEFAULT 'student',
   phone         VARCHAR(20),
+  usn           VARCHAR(30),
+  academic_year VARCHAR(20),
+  branch        VARCHAR(60),
+  roll_no       VARCHAR(30),
+  section       VARCHAR(10),
   fcm_token     TEXT,
   created_at    TIMESTAMPTZ DEFAULT NOW(),
   updated_at    TIMESTAMPTZ DEFAULT NOW()
@@ -59,6 +64,7 @@ CREATE TABLE IF NOT EXISTS route_stops (
 CREATE TABLE IF NOT EXISTS buses (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   bus_number   VARCHAR(20) UNIQUE NOT NULL,
+  number_plate VARCHAR(30),
   capacity     INT DEFAULT 50,
   route_id     UUID REFERENCES routes(id),
   driver_id    UUID REFERENCES users(id),

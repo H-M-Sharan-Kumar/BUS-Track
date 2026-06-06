@@ -41,7 +41,7 @@ export default function AdminPage() {
 
   // Add Bus modal
   const [showAddBus, setShowAddBus] = useState(false);
-  const [busForm, setBusForm] = useState({ bus_number: "", capacity: 50, route_id: "", driver_name: "", driver_photo: "" });
+  const [busForm, setBusForm] = useState({ bus_number: "", number_plate: "", capacity: 50, route_id: "", driver_name: "", driver_photo: "" });
   const [savingBus, setSavingBus] = useState(false);
 
   // Stops
@@ -102,7 +102,7 @@ export default function AdminPage() {
     try {
       await api.post("/admin/buses", busForm);
       setShowAddBus(false);
-      setBusForm({ bus_number: "", capacity: 50, route_id: "", driver_name: "", driver_photo: "" });
+      setBusForm({ bus_number: "", number_plate: "", capacity: 50, route_id: "", driver_name: "", driver_photo: "" });
       load();
     } catch (e) {
       alert(e.response?.data?.error || "Failed to add bus");
@@ -221,16 +221,27 @@ export default function AdminPage() {
                       background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px",
                       padding:"14px", display:"flex", alignItems:"center", gap:"14px", flexWrap: isMobile ? "wrap" : "nowrap",
                     }}>
-                      {/* Driver photo or bus icon */}
-                      {b.driver_photo ? (
-                        <img src={b.driver_photo} alt="driver" style={{ width:"44px", height:"44px", borderRadius:"10px", objectFit:"cover", flexShrink:0 }}/>
-                      ) : (
-                        <div style={{ width:"44px", height:"44px", borderRadius:"10px", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"20px" }}>🚌</div>
+                      {/* Bus number badge (replaces logo) */}
+                      <div style={{
+                        width:"48px", height:"48px", borderRadius:"12px", flexShrink:0,
+                        background:"linear-gradient(135deg, var(--amber), var(--amber-dim))",
+                        display:"flex", alignItems:"center", justifyContent:"center",
+                        fontFamily:"var(--font-display)", fontWeight:800, fontSize:"22px", color:"#0a0600",
+                        boxShadow:"0 0 14px var(--amber-glow)",
+                      }}>{b.bus_number}</div>
+
+                      {/* Optional driver photo thumbnail */}
+                      {b.driver_photo && (
+                        <img src={b.driver_photo} alt="driver" style={{ width:"40px", height:"40px", borderRadius:"50%", objectFit:"cover", flexShrink:0, border:"1px solid var(--border-hi)" }}/>
                       )}
+
                       <div style={{ flex:1, minWidth:"120px" }}>
-                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px" }}>{b.bus_number}</div>
+                        <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"16px" }}>
+                          Bus {b.bus_number}
+                          {b.number_plate && <span style={{ fontSize:"12px", color:"var(--text-3)", fontFamily:"var(--font-mono)", marginLeft:"8px" }}>{b.number_plate}</span>}
+                        </div>
                         <div style={{ fontSize:"13px", color:"var(--text-3)" }}>
-                          {(b.driver_name || b.driver_name) ? `Driver: ${b.driver_name}` : "No driver"} · {b.route_name || "No route"} · {b.capacity} seats
+                          {b.driver_name ? `Driver: ${b.driver_name}` : "No driver"} · {b.route_name || "No route"} · {b.capacity} seats
                         </div>
                       </div>
                       <div style={{
@@ -317,18 +328,44 @@ export default function AdminPage() {
             {tab === "users" && (
               <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
                 {users.map((u) => (
-                  <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px" }}>
-                    <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>{ROLE_EMOJI[u.role] || "👤"}</div>
-                    <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
-                      <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
+                  <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
+                      <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>{ROLE_EMOJI[u.role] || "👤"}</div>
+                      <div style={{ flex:1, minWidth:0 }}>
+                        <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                        <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
+                      </div>
+                      <span style={{
+                        fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)",
+                        color: u.role==="admin" ? "#EC4899" : u.role==="driver" ? "var(--amber)" : "#6366F1",
+                        background: u.role==="admin" ? "rgba(236,72,153,0.1)" : u.role==="driver" ? "rgba(245,166,35,0.1)" : "rgba(99,102,241,0.1)",
+                        padding:"4px 10px", borderRadius:"6px",
+                      }}>{u.role}</span>
                     </div>
-                    <span style={{
-                      fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)",
-                      color: u.role==="admin" ? "#EC4899" : u.role==="driver" ? "var(--amber)" : "#6366F1",
-                      background: u.role==="admin" ? "rgba(236,72,153,0.1)" : u.role==="driver" ? "rgba(245,166,35,0.1)" : "rgba(99,102,241,0.1)",
-                      padding:"4px 10px", borderRadius:"6px",
-                    }}>{u.role}</span>
+
+                    {/* Student academic details */}
+                    {u.role === "student" && (u.usn || u.branch || u.roll_no || u.section || u.academic_year) && (
+                      <div style={{
+                        display:"flex", flexWrap:"wrap", gap:"8px", marginTop:"10px",
+                        paddingTop:"10px", borderTop:"1px solid var(--border)",
+                      }}>
+                        {[
+                          { k:"USN",     v:u.usn },
+                          { k:"Roll No", v:u.roll_no },
+                          { k:"Section", v:u.section },
+                          { k:"Year",    v:u.academic_year },
+                          { k:"Branch",  v:u.branch },
+                        ].filter(x => x.v).map((x) => (
+                          <div key={x.k} style={{
+                            background:"var(--carbon-3)", borderRadius:"7px", padding:"5px 10px",
+                            fontSize:"12px", fontFamily:"var(--font-mono)",
+                          }}>
+                            <span style={{ color:"var(--text-3)" }}>{x.k}: </span>
+                            <span style={{ color:"var(--text-1)", fontWeight:600 }}>{x.v}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -354,9 +391,15 @@ export default function AdminPage() {
               </label>
             </div>
 
-            <div style={{ marginBottom:"12px" }}>
-              <label style={labelStyle}>Bus Number *</label>
-              <input value={busForm.bus_number} onChange={(e) => setBusForm({ ...busForm, bus_number: e.target.value })} placeholder="TN-01-AB-1234" style={inputStyle}/>
+            <div style={{ display:"flex", gap:"12px", marginBottom:"12px" }}>
+              <div style={{ flex:1 }}>
+                <label style={labelStyle}>Bus Number *</label>
+                <input value={busForm.bus_number} onChange={(e) => setBusForm({ ...busForm, bus_number: e.target.value })} placeholder="1" style={inputStyle}/>
+              </div>
+              <div style={{ flex:2 }}>
+                <label style={labelStyle}>Number Plate</label>
+                <input value={busForm.number_plate} onChange={(e) => setBusForm({ ...busForm, number_plate: e.target.value })} placeholder="TN-01-AB-1234" style={inputStyle}/>
+              </div>
             </div>
             <div style={{ marginBottom:"12px" }}>
               <label style={labelStyle}>Driver Name</label>

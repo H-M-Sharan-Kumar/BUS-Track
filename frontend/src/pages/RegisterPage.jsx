@@ -12,7 +12,10 @@ const ROLES = [
 export default function RegisterPage() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "student", phone: "" });
+  const [form, setForm] = useState({
+    name: "", email: "", password: "", role: "student", phone: "",
+    usn: "", academic_year: "", branch: "", roll_no: "", section: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -165,6 +168,64 @@ export default function RegisterPage() {
                 />
               </div>
             ))}
+
+            {/* ── Student-only academic details ── */}
+            {form.role === "student" && (
+              <div style={{
+                background:"rgba(99,102,241,0.06)", border:"1px solid rgba(99,102,241,0.2)",
+                borderRadius:"12px", padding:"14px",
+              }}>
+                <div style={{
+                  fontSize:"13px", fontWeight:700, color:"#818cf8", marginBottom:"12px",
+                  fontFamily:"var(--font-mono)", letterSpacing:"0.5px",
+                }}>🎓 ACADEMIC DETAILS</div>
+
+                {[
+                  { label:"USN",            key:"usn",           type:"text", placeholder:"1XX21CS001", req:true,  full:true },
+                  { label:"Roll No",        key:"roll_no",       type:"text", placeholder:"42",          req:true,  full:false },
+                  { label:"Section",        key:"section",       type:"text", placeholder:"A",           req:true,  full:false },
+                  { label:"Academic Year",  key:"academic_year", type:"text", placeholder:"2nd Year",    req:true,  full:false },
+                  { label:"Branch",         key:"branch",        type:"text", placeholder:"CSE",         req:true,  full:false },
+                ].reduce((rows, f, i, arr) => {
+                  // group into pairs except full-width ones
+                  if (f.full) { rows.push([f]); }
+                  else {
+                    const last = rows[rows.length - 1];
+                    if (last && last.length === 1 && !last[0].full) last.push(f);
+                    else rows.push([f]);
+                  }
+                  return rows;
+                }, []).map((rowFields, ri) => (
+                  <div key={ri} style={{ display:"flex", gap:"10px", marginBottom:"10px" }}>
+                    {rowFields.map((field) => (
+                      <div key={field.key} style={{ flex:1 }}>
+                        <label style={{
+                          display:"block", fontSize:"11px", fontWeight:600, textTransform:"uppercase",
+                          letterSpacing:"0.6px", color:"var(--text-3)", marginBottom:"6px",
+                          fontFamily:"var(--font-mono)",
+                        }}>{field.label}</label>
+                        <input
+                          type={field.type}
+                          value={form[field.key]}
+                          onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
+                          placeholder={field.placeholder}
+                          required={field.req}
+                          style={{
+                            width:"100%", background:"var(--carbon-3)",
+                            border:"1px solid var(--border-hi)", borderRadius:"10px",
+                            padding:"11px 14px", color:"var(--text-1)",
+                            fontSize:"15px", fontFamily:"var(--font-body)", outline:"none",
+                            transition:"border-color 0.2s, box-shadow 0.2s",
+                          }}
+                          onFocus={(e) => { e.target.style.borderColor="#818cf8"; e.target.style.boxShadow="0 0 0 3px rgba(99,102,241,0.15)"; }}
+                          onBlur={(e)  => { e.target.style.borderColor="var(--border-hi)"; e.target.style.boxShadow="none"; }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
 
             <button
               type="submit"
