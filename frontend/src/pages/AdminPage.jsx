@@ -6,6 +6,20 @@ import { useIsMobile } from "../hooks/useMediaQuery";
 
 const ROLE_EMOJI = { student: "🧑‍🎓", driver: "🚗", admin: "🛡️" };
 
+// Edit / deactivate / delete action buttons for a user row
+function UserActions({ u, onEdit, onToggle, onDelete }) {
+  const btn = { background:"var(--carbon-3)", border:"1px solid var(--border-hi)", borderRadius:"7px", padding:"5px 8px", cursor:"pointer", fontSize:"13px" };
+  return (
+    <div style={{ display:"flex", gap:"6px", flexShrink:0 }}>
+      <button title="Edit" onClick={onEdit} style={{ ...btn, color:"var(--sky)" }}>✏️</button>
+      <button title={u.is_active === false ? "Activate" : "Deactivate"} onClick={onToggle} style={{ ...btn, color: u.is_active === false ? "var(--green)" : "var(--amber)" }}>
+        {u.is_active === false ? "▶" : "⏸"}
+      </button>
+      <button title="Delete" onClick={onDelete} style={{ ...btn, color:"var(--red)" }}>🗑️</button>
+    </div>
+  );
+}
+
 // Compress an image file to a small base64 thumbnail
 function compressImage(file, maxSize = 200) {
   return new Promise((resolve) => {
@@ -39,6 +53,7 @@ export default function AdminPage() {
   const [tab, setTab] = useState("fleet"); // fleet | stops | users
   const [userSubTab, setUserSubTab] = useState("student"); // student | driver
   const [userSearch, setUserSearch] = useState("");
+  const [editUser, setEditUser] = useState(null); // user object being edited
   const [loading, setLoading] = useState(true);
 
   // Add Bus modal
@@ -114,6 +129,22 @@ export default function AdminPage() {
   const deleteBus = async (id) => {
     if (!confirm("Delete this bus?")) return;
     await api.delete(`/admin/buses/${id}`);
+    load();
+  };
+
+  // ── User management ──
+  const deleteUser = async (id, name) => {
+    if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
+    await api.delete(`/admin/users/${id}`);
+    load();
+  };
+  const toggleUserActive = async (u) => {
+    await api.patch(`/admin/users/${u.id}/active`, { is_active: !(u.is_active !== false) });
+    load();
+  };
+  const saveUserEdit = async () => {
+    await api.patch(`/admin/users/${editUser.id}`, editUser);
+    setEditUser(null);
     load();
   };
 
@@ -379,13 +410,14 @@ export default function AdminPage() {
                   {userSubTab === "student" && (
                     <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
                       {students.map((u) => (
-                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px" }}>
+                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", opacity: u.is_active === false ? 0.55 : 1 }}>
                           <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
                             <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"rgba(99,102,241,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>🧑‍🎓</div>
                             <div style={{ flex:1, minWidth:0 }}>
-                              <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                              <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name} {u.is_active === false && <span style={{ fontSize:"11px", color:"var(--red)" }}>(inactive)</span>}</div>
                               <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
                             </div>
+                            <UserActions u={u} onEdit={() => setEditUser({ ...u })} onToggle={() => toggleUserActive(u)} onDelete={() => deleteUser(u.id, u.name)} />
                           </div>
                           {(u.usn || u.branch || u.roll_no || u.section || u.academic_year) && (
                             <div style={{ display:"flex", flexWrap:"wrap", gap:"8px", marginTop:"10px", paddingTop:"10px", borderTop:"1px solid var(--border)" }}>
@@ -410,13 +442,13 @@ export default function AdminPage() {
                   {userSubTab === "driver" && (
                     <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
                       {driverList.map((u) => (
-                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px" }}>
+                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px", opacity: u.is_active === false ? 0.55 : 1 }}>
                           <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"rgba(245,166,35,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>🚗</div>
                           <div style={{ flex:1, minWidth:0 }}>
-                            <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                            <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name} {u.is_active === false && <span style={{ fontSize:"11px", color:"var(--red)" }}>(inactive)</span>}</div>
                             <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}{u.phone ? ` · ${u.phone}` : ""}</div>
                           </div>
-                          <span style={{ fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)", color:"var(--amber)", background:"rgba(245,166,35,0.1)", padding:"4px 10px", borderRadius:"6px" }}>driver</span>
+                          <UserActions u={u} onEdit={() => setEditUser({ ...u })} onToggle={() => toggleUserActive(u)} onDelete={() => deleteUser(u.id, u.name)} />
                         </div>
                       ))}
                       {driverList.length === 0 && <div style={{ textAlign:"center", padding:"30px", color:"var(--text-3)", fontSize:"14px" }}>{q ? "No matching drivers" : "No drivers yet"}</div>}
@@ -477,6 +509,48 @@ export default function AdminPage() {
             <div style={{ display:"flex", gap:"10px", marginTop:"18px" }}>
               <button onClick={() => setShowAddBus(false)} style={{ flex:1, background:"var(--carbon-3)", border:"1px solid var(--border-hi)", borderRadius:"8px", padding:"11px", color:"var(--text-2)", fontWeight:600, cursor:"pointer" }}>Cancel</button>
               <button onClick={submitBus} disabled={savingBus || !busForm.bus_number} style={{ flex:1, background:"linear-gradient(135deg,var(--amber),var(--amber-dim))", border:"none", borderRadius:"8px", padding:"11px", color:"#0a0600", fontWeight:700, fontFamily:"var(--font-display)", cursor:"pointer", opacity: (savingBus || !busForm.bus_number) ? 0.5 : 1 }}>{savingBus ? "Saving…" : "Add Bus"}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Edit User Modal ── */}
+      {editUser && (
+        <div onClick={() => setEditUser(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"16px" }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ background:"var(--carbon-1)", border:"1px solid var(--border-hi)", borderRadius:"16px", padding:"24px", width:"100%", maxWidth:"440px", maxHeight:"88svh", overflowY:"auto" }}>
+            <div style={{ fontFamily:"var(--font-display)", fontWeight:700, fontSize:"18px", marginBottom:"18px" }}>
+              {ROLE_EMOJI[editUser.role]} Edit {editUser.role}
+            </div>
+
+            {[
+              { label:"Name", key:"name" },
+              { label:"Email", key:"email" },
+              { label:"Phone", key:"phone" },
+            ].map((f) => (
+              <div key={f.key} style={{ marginBottom:"12px" }}>
+                <label style={labelStyle}>{f.label}</label>
+                <input value={editUser[f.key] || ""} onChange={(e) => setEditUser({ ...editUser, [f.key]: e.target.value })} style={inputStyle}/>
+              </div>
+            ))}
+
+            {editUser.role === "student" && (
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"10px" }}>
+                {[
+                  { label:"USN", key:"usn" }, { label:"Roll No", key:"roll_no" },
+                  { label:"Section", key:"section" }, { label:"Year", key:"academic_year" },
+                  { label:"Branch", key:"branch" },
+                ].map((f) => (
+                  <div key={f.key} style={{ flex:"1 1 45%", marginBottom:"4px" }}>
+                    <label style={labelStyle}>{f.label}</label>
+                    <input value={editUser[f.key] || ""} onChange={(e) => setEditUser({ ...editUser, [f.key]: e.target.value })} style={inputStyle}/>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display:"flex", gap:"10px", marginTop:"18px" }}>
+              <button onClick={() => setEditUser(null)} style={{ flex:1, background:"var(--carbon-3)", border:"1px solid var(--border-hi)", borderRadius:"8px", padding:"11px", color:"var(--text-2)", fontWeight:600, cursor:"pointer" }}>Cancel</button>
+              <button onClick={saveUserEdit} style={{ flex:1, background:"linear-gradient(135deg,var(--amber),var(--amber-dim))", border:"none", borderRadius:"8px", padding:"11px", color:"#0a0600", fontWeight:700, fontFamily:"var(--font-display)", cursor:"pointer" }}>Save</button>
             </div>
           </div>
         </div>

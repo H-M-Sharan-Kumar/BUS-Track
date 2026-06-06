@@ -70,12 +70,76 @@ router.get("/buses", async (_req, res) => {
 router.get("/users", async (_req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT id, name, email, role, phone,
+      `SELECT id, name, email, role, phone, is_active,
               usn, academic_year, branch, roll_no, section, created_at
        FROM users ORDER BY role, created_at DESC`
     );
     res.json({ users: rows });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id — edit a user
+router.patch("/users/:id", async (req, res) => {
+  const { name, email, phone, usn, academic_year, branch, roll_no, section } = req.body;
+  try {
+    await pool.query(
+      `UPDATE users SET
+         name = COALESCE($1, name),
+         email = COALESCE($2, email),
+         phone = $3, usn = $4, academic_year = $5,
+         branch = $6, roll_no = $7, section = $8,
+         updated_at = NOW()
+       WHERE id = $9`,
+      [name, email, phone, usn, academic_year, branch, roll_no, section, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === "23505") return res.status(409).json({ error: "Email already in use" });
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/users/:id/active — activate/deactivate
+router.patch("/users/:id/active", async (req, res) => {
+  const { is_active } = req.body;
+  try {
+    await pool.query("UPDATE users SET is_active = $1 WHERE id = $2", [!!is_active, req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/admin/users/:id
+router.delete("/users/:id", async (req, res) => {
+  try {
+    // unassign from any bus first to satisfy FK
+    await pool.query("UPDATE buses SET driver_id = NULL WHERE driver_id = $1", [req.params.id]);
+    await pool.query("DELETE FROM users WHERE id = $1", [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PATCH /api/admin/buses/:id — edit bus details
+router.patch("/buses/:id", async (req, res) => {
+  const { bus_number, number_plate, capacity, route_id, driver_name, is_active } = req.body;
+  try {
+    await pool.query(
+      `UPDATE buses SET
+         bus_number = COALESCE($1, bus_number),
+         number_plate = $2, capacity = COALESCE($3, capacity),
+         route_id = $4, driver_name = $5,
+         is_active = COALESCE($6, is_active)
+       WHERE id = $7`,
+      [bus_number, number_plate, capacity, route_id || null, driver_name, is_active, req.params.id]
+    );
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === "23505") return res.status(409).json({ error: "Bus number already exists" });
     res.status(500).json({ error: err.message });
   }
 });

@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
   branch        VARCHAR(60),
   roll_no       VARCHAR(30),
   section       VARCHAR(10),
+  is_active     BOOLEAN DEFAULT TRUE,
   fcm_token     TEXT,
   created_at    TIMESTAMPTZ DEFAULT NOW(),
   updated_at    TIMESTAMPTZ DEFAULT NOW()
