@@ -37,6 +37,8 @@ export default function AdminPage() {
   const [drivers, setDrivers] = useState([]);
   const [routes, setRoutes] = useState([]);
   const [tab, setTab] = useState("fleet"); // fleet | stops | users
+  const [userSubTab, setUserSubTab] = useState("student"); // student | driver
+  const [userSearch, setUserSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   // Add Bus modal
@@ -325,51 +327,104 @@ export default function AdminPage() {
             )}
 
             {/* ── USERS ── */}
-            {tab === "users" && (
-              <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
-                {users.map((u) => (
-                  <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px" }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-                      <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"var(--carbon-4)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>{ROLE_EMOJI[u.role] || "👤"}</div>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
-                        <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
-                      </div>
-                      <span style={{
-                        fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)",
-                        color: u.role==="admin" ? "#EC4899" : u.role==="driver" ? "var(--amber)" : "#6366F1",
-                        background: u.role==="admin" ? "rgba(236,72,153,0.1)" : u.role==="driver" ? "rgba(245,166,35,0.1)" : "rgba(99,102,241,0.1)",
-                        padding:"4px 10px", borderRadius:"6px",
-                      }}>{u.role}</span>
-                    </div>
+            {tab === "users" && (() => {
+              const q = userSearch.trim().toLowerCase();
+              const matches = (u) =>
+                !q ||
+                u.name?.toLowerCase().includes(q) ||
+                u.email?.toLowerCase().includes(q) ||
+                u.usn?.toLowerCase().includes(q) ||
+                u.roll_no?.toLowerCase().includes(q);
+              const students = users.filter((u) => u.role === "student" && matches(u));
+              const driverList = users.filter((u) => u.role === "driver" && matches(u));
+              const totalStudents = users.filter((u) => u.role === "student").length;
+              const totalDrivers = users.filter((u) => u.role === "driver").length;
 
-                    {/* Student academic details */}
-                    {u.role === "student" && (u.usn || u.branch || u.roll_no || u.section || u.academic_year) && (
-                      <div style={{
-                        display:"flex", flexWrap:"wrap", gap:"8px", marginTop:"10px",
-                        paddingTop:"10px", borderTop:"1px solid var(--border)",
-                      }}>
-                        {[
-                          { k:"USN",     v:u.usn },
-                          { k:"Roll No", v:u.roll_no },
-                          { k:"Section", v:u.section },
-                          { k:"Year",    v:u.academic_year },
-                          { k:"Branch",  v:u.branch },
-                        ].filter(x => x.v).map((x) => (
-                          <div key={x.k} style={{
-                            background:"var(--carbon-3)", borderRadius:"7px", padding:"5px 10px",
-                            fontSize:"12px", fontFamily:"var(--font-mono)",
-                          }}>
-                            <span style={{ color:"var(--text-3)" }}>{x.k}: </span>
-                            <span style={{ color:"var(--text-1)", fontWeight:600 }}>{x.v}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+              return (
+                <div>
+                  {/* Sub-tabs: Students / Drivers */}
+                  <div style={{ display:"flex", gap:"8px", marginBottom:"14px" }}>
+                    {[
+                      { k:"student", l:`🧑‍🎓 Students (${totalStudents})`, c:"#6366F1" },
+                      { k:"driver",  l:`🚗 Drivers (${totalDrivers})`,   c:"var(--amber)" },
+                    ].map((t) => (
+                      <button key={t.k} onClick={() => { setUserSubTab(t.k); setUserSearch(""); }} style={{
+                        padding:"8px 16px", borderRadius:"10px", cursor:"pointer",
+                        border:`1px solid ${userSubTab===t.k ? t.c : "var(--border)"}`,
+                        background: userSubTab===t.k ? "var(--carbon-3)" : "var(--carbon-2)",
+                        color: userSubTab===t.k ? t.c : "var(--text-3)",
+                        fontWeight:700, fontFamily:"var(--font-display)", fontSize:"13px",
+                      }}>{t.l}</button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
+
+                  {/* Search bar */}
+                  <div style={{ position:"relative", marginBottom:"14px" }}>
+                    <span style={{ position:"absolute", left:"14px", top:"50%", transform:"translateY(-50%)", fontSize:"15px", pointerEvents:"none" }}>🔍</span>
+                    <input
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder={userSubTab === "driver" ? "Search driver by name or email…" : "Search student by name, USN or roll no…"}
+                      style={{
+                        width:"100%", background:"var(--carbon-3)", border:"1px solid var(--border-hi)",
+                        borderRadius:"10px", padding:"11px 14px 11px 40px", color:"var(--text-1)",
+                        fontSize:"14px", fontFamily:"var(--font-body)", outline:"none",
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = "var(--amber)"}
+                      onBlur={(e) => e.target.style.borderColor = "var(--border-hi)"}
+                    />
+                  </div>
+
+                  {/* ── STUDENTS ── */}
+                  {userSubTab === "student" && (
+                    <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                      {students.map((u) => (
+                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px" }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
+                            <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"rgba(99,102,241,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>🧑‍🎓</div>
+                            <div style={{ flex:1, minWidth:0 }}>
+                              <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                              <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}</div>
+                            </div>
+                          </div>
+                          {(u.usn || u.branch || u.roll_no || u.section || u.academic_year) && (
+                            <div style={{ display:"flex", flexWrap:"wrap", gap:"8px", marginTop:"10px", paddingTop:"10px", borderTop:"1px solid var(--border)" }}>
+                              {[
+                                { k:"USN", v:u.usn }, { k:"Roll No", v:u.roll_no }, { k:"Section", v:u.section },
+                                { k:"Year", v:u.academic_year }, { k:"Branch", v:u.branch },
+                              ].filter(x => x.v).map((x) => (
+                                <div key={x.k} style={{ background:"var(--carbon-3)", borderRadius:"7px", padding:"5px 10px", fontSize:"12px", fontFamily:"var(--font-mono)" }}>
+                                  <span style={{ color:"var(--text-3)" }}>{x.k}: </span>
+                                  <span style={{ color:"var(--text-1)", fontWeight:600 }}>{x.v}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      {students.length === 0 && <div style={{ textAlign:"center", padding:"30px", color:"var(--text-3)", fontSize:"14px" }}>{q ? "No matching students" : "No students yet"}</div>}
+                    </div>
+                  )}
+
+                  {/* ── DRIVERS ── */}
+                  {userSubTab === "driver" && (
+                    <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                      {driverList.map((u) => (
+                        <div key={u.id} style={{ background:"var(--carbon-2)", border:"1px solid var(--border)", borderRadius:"12px", padding:"12px 14px", display:"flex", alignItems:"center", gap:"12px" }}>
+                          <div style={{ width:"38px", height:"38px", borderRadius:"50%", flexShrink:0, background:"rgba(245,166,35,0.15)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"16px" }}>🚗</div>
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <div style={{ fontWeight:600, fontSize:"15px" }}>{u.name}</div>
+                            <div style={{ fontSize:"13px", color:"var(--text-3)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{u.email}{u.phone ? ` · ${u.phone}` : ""}</div>
+                          </div>
+                          <span style={{ fontSize:"12px", fontWeight:700, textTransform:"uppercase", fontFamily:"var(--font-mono)", color:"var(--amber)", background:"rgba(245,166,35,0.1)", padding:"4px 10px", borderRadius:"6px" }}>driver</span>
+                        </div>
+                      ))}
+                      {driverList.length === 0 && <div style={{ textAlign:"center", padding:"30px", color:"var(--text-3)", fontSize:"14px" }}>{q ? "No matching drivers" : "No drivers yet"}</div>}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </>
         )}
       </div>
