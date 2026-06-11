@@ -1,123 +1,111 @@
-# 🚌 BusTrack — Real-Time College Bus Tracking
+# BusTrack — Real-Time College Bus Tracking
 
-**Live App:** **[bus-track-production-ba4e.up.railway.app](https://bus-track-production-ba4e.up.railway.app)**
+Live app: [bus-track-production-ba4e.up.railway.app](https://bus-track-production-ba4e.up.railway.app)
 
-BusTrack is a real-time college bus tracking **Progressive Web App (PWA)**. Drivers broadcast their live GPS from a phone browser, and students see exactly where their bus is, how fast it's moving, and **when it will arrive** — updated every 4 seconds. It's installable on any phone and works on any network.
+BusTrack is a real-time college bus tracking web app (installable as a PWA). A driver broadcasts their live GPS from a phone browser, and students see where the bus is, how fast it is moving, and when it will arrive. Positions refresh every 4 seconds. The app is built with Node.js, Express, PostgreSQL, Redis, Socket.io, and React + Vite, and is deployed on Railway.
 
-> Built with **Node.js · Express · PostgreSQL · Redis · Socket.io · React + Vite · Leaflet**, deployed on **Railway**.
+## Features
 
----
+- Live GPS tracking with positions updating every 4 seconds on an interactive map.
+- ETA and arrival time for each bus, both to the student and to upcoming stops.
+- Street, Satellite, and Hybrid map views.
+- Three roles — Student, Driver, and Admin — each with its own dashboard.
+- Real-time presence so users can see who else is online.
+- Stops management: admins add a stop by typing a place name and the backend pins it to exact coordinates. Students get an alert when the bus is approaching a stop.
+- Installable PWA that can be added to a phone's home screen.
+- JWT authentication with role-based access control.
 
-## ✨ Key Features
-
-- 📍 **Live GPS tracking** — bus positions update every 4 seconds on an interactive map
-- ⏱️ **ETA & arrival time** — see how many minutes until your bus reaches you or a stop
-- 🛰️ **Street / Satellite / Hybrid** map views (like Google Maps)
-- 🧑‍🎓🚗🛡️ **Three roles** — Student, Driver, and Admin, each with its own dashboard
-- 👥 **Multi-device live presence** — see other online users in real time
-- 🚏 **Smart stops** — admins add stops by name (auto-pinned to exact coordinates), students get **"bus approaching"** alerts
-- 📱 **Installable PWA** — add to home screen, works like a native app
-- 🔐 **Secure auth** — JWT tokens with role-based access
-
----
-
-## 📸 Screenshots
+## Screenshots
 
 ### Sign In
-A clean split-screen login. Students, drivers, and admins all sign in here and are routed to the right dashboard automatically.
+A split-screen login. Students, drivers, and admins sign in here and are routed to the correct dashboard.
 
 ![Login page](docs/screenshots/01-login.png)
 
 ### Register
-Pick a role. Students are asked for their **academic details** (USN, Roll No, Section, Year, Branch); drivers and admins get a simpler form.
+The user picks a role. Students are asked for academic details (USN, roll number, section, year, branch); drivers and admins get a shorter form.
 
 ![Register page](docs/screenshots/02-register.png)
 
 ### Student Dashboard
-A full live map with your location, nearby buses, and a sidebar showing each bus's **speed, ETA, and arrival time**. Switch between Street, Satellite, and Hybrid views.
+A live map showing the student's location and nearby buses, with a sidebar listing each bus's speed, ETA, and arrival time. The map supports Street, Satellite, and Hybrid views.
 
 ![Student dashboard](docs/screenshots/03-student-dashboard.png)
 
 ### Driver Dashboard
-The driver picks their bus and taps **Start Trip** — the phone's GPS is then broadcast live to every student. Shows live trip stats (duration, pings sent, speed).
+The driver selects their bus and starts a trip. The phone's GPS is then broadcast live to every student tracking that bus. Trip stats (duration, pings sent, speed) are shown.
 
 ![Driver dashboard](docs/screenshots/04-driver-dashboard.png)
 
 ### Admin — Fleet
-Live overview of the whole system: total users, students, drivers, active buses, trips, and routes. Each bus shows its **number badge**, number plate, route, LIVE/OFFLINE status, and a driver-assignment dropdown.
+An overview of the system: total users, students, drivers, active buses, trips, and routes. Each bus shows its number, plate, route, LIVE or OFFLINE status, and a driver-assignment dropdown.
 
 ![Admin fleet](docs/screenshots/05-admin-fleet.png)
 
 ### Admin — Stops
-Add a stop to any route by typing a place name — the backend **pins the exact location automatically**. Students then see these stops with live ETAs.
+Stops are added to a route by typing a place name; the backend resolves it to exact coordinates. Students then see these stops with live ETAs.
 
 ![Admin stops](docs/screenshots/06-admin-stops.png)
 
 ### Admin — Users
-Users are split into **Students** and **Drivers**, each with a **search bar**. Student cards show full academic details. Admins can edit, deactivate, or delete any user.
+Users are split into Students and Drivers, each with a search bar. Student cards show full academic details, and admins can edit, deactivate, or delete any user.
 
 ![Admin users](docs/screenshots/07-admin-users.png)
 
-### Mobile (PWA)
-Fully responsive — on phones the map fills the screen with a bottom navigation bar and slide-up panels.
+### Mobile
+The app is responsive. On phones the map fills the screen with a bottom navigation bar and slide-up panels.
 
 <img src="docs/screenshots/08-mobile-student.png" width="320" alt="Mobile student view"/>
 
----
+## How to Use
 
-## 🧭 How to Use
+### As a Student
+1. Open the app, go to Register, choose Student, and fill in your name, email, password, and academic details (USN, roll number, section, year, branch).
+2. Sign in. You land on the live map.
+3. Allow location access when the browser asks; this places you on the map.
+4. Browse nearby buses in the left panel. Each shows speed, ETA, and arrival time.
+5. Tap a bus to track it. Its upcoming stops and ETAs appear, and a banner shows when it is approaching a stop.
+6. Use the Satellite button on the map to switch to a satellite view.
 
-### 👨‍🎓 As a Student
-1. Open the app → **Register** → choose **Student** → fill in your name, email, password, and academic details (USN, roll no, section, year, branch).
-2. **Sign in** — you land on the live map.
-3. Allow **location access** when the browser asks (this places you on the map).
-4. Browse **nearby buses** in the left panel — each shows **Speed · ETA · Arrival time**.
-5. Tap a bus to **track** it; its upcoming stops and ETAs appear, and you get a banner when it's approaching a stop.
-6. Use the **🛰️ Satellite** button on the map for a satellite view.
+### As a Driver
+1. Register and choose Driver, or have an admin link your account to a bus.
+2. Sign in to open the Driver Dashboard.
+3. Select your bus from the list.
+4. Allow location access, then tap Start Trip.
+5. Your GPS now broadcasts live every 4 seconds, and students tracking your bus see you move in real time.
+6. Tap End Trip when finished.
 
-### 🚗 As a Driver
-1. **Register** → choose **Driver** (or have an admin link your account to a bus).
-2. **Sign in** → the Driver Dashboard opens.
-3. **Select your bus** from the list.
-4. Allow **location access**, then tap **▶ Start Trip**.
-5. Your GPS now broadcasts live every 4 seconds — students tracking your bus see you move in real time.
-6. Tap **⏹ End Trip** when you're done.
+### As an Admin
+1. Sign in with an admin account to open the Admin Dashboard.
+2. Fleet tab: add buses (with number, plate, driver name and photo), assign drivers, and see which buses are live.
+3. Stops tab: pick a route and add stops by place name; they are pinned to exact coordinates.
+4. Users tab: search students or drivers and edit, deactivate, or remove accounts.
 
-### 🛡️ As an Admin
-1. **Sign in** with an admin account → the Admin Dashboard opens.
-2. **Fleet tab** — add buses (with number, plate, driver name & photo), assign drivers, see who's LIVE.
-3. **Stops tab** — pick a route and add stops by place name; they're pinned to exact coordinates.
-4. **Users tab** — search students or drivers; edit, deactivate, or remove accounts.
+### Install on a phone
+Open the live link in a phone browser, open the browser menu, and choose "Add to Home screen" or "Install app". It then runs full-screen like a native app.
 
-### 📲 Install on your phone
-Open the live link in your phone's browser → menu → **"Add to Home screen"** / **"Install app"**. It runs full-screen like a native app.
-
----
-
-## 🏗️ Architecture
+## Architecture
 
 ```
 Driver phone GPS
-      │  POST /api/location/update (every 4s)
-      ▼
-  Express API ──► PostgreSQL   (permanent position history + all data)
-      │       └─► Redis        (latest position cache + pub/sub)
-      ▼
-  Redis pub/sub ──► Socket.io ──► Student maps update live
+      |  POST /api/location/update (every 4s)
+      v
+  Express API ---> PostgreSQL   (permanent position history + all data)
+      |        \-> Redis        (latest position cache + pub/sub)
+      v
+  Redis pub/sub ---> Socket.io ---> Student maps update live
 ```
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | React + Vite, React Router, Leaflet maps, Socket.io-client, PWA (service worker) |
-| **Backend** | Node.js, Express, Socket.io, JWT auth |
-| **Database** | PostgreSQL |
-| **Cache / Realtime** | Redis (live positions + pub/sub) |
-| **Geocoding** | OpenStreetMap Nominatim (stop pinning) |
-| **Hosting** | Railway (app + PostgreSQL + Redis) |
+| Frontend | React + Vite, React Router, Leaflet maps, Socket.io-client, PWA (service worker) |
+| Backend | Node.js, Express, Socket.io, JWT auth |
+| Database | PostgreSQL |
+| Cache / Realtime | Redis (live positions + pub/sub) |
+| Geocoding | OpenStreetMap Nominatim (stop pinning) |
+| Hosting | Railway (app + PostgreSQL + Redis) |
 
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 bustrack/
@@ -138,11 +126,9 @@ bustrack/
 └── docs/screenshots/        # images used in this README
 ```
 
----
+## Run Locally
 
-## 🚀 Run Locally
-
-**Prerequisites:** Node.js 20+, and Docker (for PostgreSQL + Redis).
+Prerequisites: Node.js 20+ and Docker (for PostgreSQL and Redis).
 
 ```bash
 # 1. Start PostgreSQL + Redis
@@ -161,9 +147,7 @@ npm run dev            # http://localhost:5173
 
 The database schema and seed data load automatically from `database/schema.sql` on first start.
 
----
-
-## 🔑 Demo Accounts (live site)
+## Demo Accounts (live site)
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -171,17 +155,11 @@ The database schema and seed data load automatically from `database/schema.sql` 
 | Driver | `demo.driver@bustrack.app` | `Demo@1234` |
 | Admin | `demo.admin@bustrack.app` | `Demo@1234` |
 
----
+## Roadmap
 
-## 🗺️ Roadmap
-
-- 🔔 Push notifications (Firebase Cloud Messaging) — alerts when the app is closed
-- 📥 Bulk student import via Excel/CSV
-- 🔑 Password reset + email verification
-- 🛣️ Draw road routes on the map
-- 📊 Reports & analytics (trip history, on-time %)
-- 👪 Parent accounts & boarding attendance
-
----
-
-*Built as a real-time transit tracking system. Contributions and ideas welcome.*
+- Push notifications (Firebase Cloud Messaging) for alerts when the app is closed.
+- Bulk student import via Excel/CSV.
+- Password reset and email verification.
+- Road-following route lines on the map.
+- Reports and analytics (trip history, on-time percentage).
+- Parent accounts and boarding attendance.
