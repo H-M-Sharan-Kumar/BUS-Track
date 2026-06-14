@@ -1,6 +1,6 @@
 import { Router } from "express";
 import pool from "../config/db.js";
-import redis from "../config/redis.js";
+import { setPosition, getPosition, shouldAlert, publish } from "../config/liveStore.js";
 import { authenticate, requireRole } from "../middleware/auth.js";
 
 const router = Router();
@@ -37,15 +37,12 @@ async function checkStopProximity(bus_id, lat, lng, speed) {
       const d = distM(lat, lng, stop.latitude, stop.longitude);
       if (d <= 800) {
         // de-dup: only alert once per bus+stop within 30 min
-        const key = `alert:${bus_id}:${stop.id}`;
-        const already = await redis.get(key);
-        if (already) continue;
-        await redis.setex(key, 1800, "1");
+        if (!shouldAlert(`alert:${bus_id}:${stop.id}`, 1800)) continue;
         const kmh = speed && speed > 2 ? speed : 20;
         const etaMin = Math.max(0, Math.round((d / 1000 / kmh) * 60));
-        await redis.publish("stop:approaching", JSON.stringify({
+        publish("stop:approaching", {
           bus_id, stop_name: stop.name, distance_m: Math.round(d), eta_min: etaMin,
-        }));
+        });
       }
     }
   } catch (e) {
@@ -64,9 +61,8 @@ router.post("/update", authenticate, requireRole("driver"), async (req, res) => 
        VALUES ($1, $2, $3, $4, $5, $6)`,
       [bus_id, trip_id || null, latitude, longitude, speed || null, heading || null]
     );
-    const posData = JSON.stringify({ latitude, longitude, speed, heading, updated_at: new Date() });
-    await redis.setex(`bus:${bus_id}:position`, 30, posData);
-    await redis.publish("gps:update", JSON.stringify({ bus_id, latitude, longitude, speed, heading }));
+    setPosition(bus_id, { latitude, longitude, speed, heading, updated_at: new Date() }, 30);
+    publish("gps:update", { bus_id, latitude, longitude, speed, heading });
     // Fire-and-forget proximity check (don't block the response)
     checkStopProximity(bus_id, latitude, longitude, speed);
     res.json({ ok: true });
@@ -79,8 +75,8 @@ router.post("/update", authenticate, requireRole("driver"), async (req, res) => 
 router.get("/bus/:busId", authenticate, async (req, res) => {
   const { busId } = req.params;
   try {
-    const cached = await redis.get(`bus:${busId}:position`);
-    if (cached) return res.json({ source: "cache", position: JSON.parse(cached) });
+    const cached = getPosition(busId);
+    if (cached) return res.json({ source: "cache", position: cached });
     const { rows } = await pool.query(
       `SELECT latitude, longitude, speed, heading, recorded_at
        FROM live_positions WHERE bus_id = $1 ORDER BY recorded_at DESC LIMIT 1`,

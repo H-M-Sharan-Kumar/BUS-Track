@@ -1,6 +1,6 @@
 import { Router } from "express";
 import pool from "../config/db.js";
-import redis from "../config/redis.js";
+import { isLive } from "../config/liveStore.js";
 import { authenticate, requireRole } from "../middleware/auth.js";
 
 const router = Router();
@@ -48,19 +48,7 @@ router.get("/buses", async (_req, res) => {
        ORDER BY LENGTH(b.bus_number), b.bus_number`
     );
 
-    // Batch-fetch live status with one Redis round-trip (mget), guarded
-    let liveFlags = {};
-    try {
-      if (rows.length) {
-        const keys = rows.map((b) => `bus:${b.id}:position`);
-        const vals = await redis.mget(keys);
-        rows.forEach((b, i) => { liveFlags[b.id] = !!vals[i]; });
-      }
-    } catch {
-      // Redis unavailable — return buses without live flags rather than hang
-    }
-
-    res.json({ buses: rows.map((b) => ({ ...b, isLive: !!liveFlags[b.id] })) });
+    res.json({ buses: rows.map((b) => ({ ...b, isLive: isLive(b.id) })) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

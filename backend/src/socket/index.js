@@ -1,14 +1,12 @@
 import { Server } from "socket.io";
-import Redis from "ioredis";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { liveBus } from "../config/liveStore.js";
 dotenv.config();
-
-const subscriber = new Redis(process.env.REDIS_URL);
 
 export function initSocket(httpServer) {
   const io = new Server(httpServer, {
-    cors: { origin: process.env.CLIENT_URL, methods: ["GET", "POST"] },
+    cors: { origin: process.env.CLIENT_URL || "*", methods: ["GET", "POST"] },
   });
 
   // ── Auth middleware for socket ─────────────────────────
@@ -68,20 +66,13 @@ export function initSocket(httpServer) {
     });
   });
 
-  // ── Redis pub/sub for GPS bus updates + stop alerts ───
-  subscriber.subscribe("gps:update", "stop:approaching", (err) => {
-    if (err) console.error("Redis subscribe error:", err);
-    else console.log("✅ Subscribed to gps:update + stop:approaching channels");
+  // ── In-memory event bus for GPS updates + stop alerts ───
+  liveBus.on("gps:update", (data) => {
+    io.to(`bus:${data.bus_id}`).emit("bus:position", data);
   });
-
-  subscriber.on("message", (channel, message) => {
-    const data = JSON.parse(message);
-    if (channel === "gps:update") {
-      io.to(`bus:${data.bus_id}`).emit("bus:position", data);
-    } else if (channel === "stop:approaching") {
-      // Notify students tracking this bus that it's nearing a stop
-      io.to(`bus:${data.bus_id}`).emit("bus:approaching", data);
-    }
+  liveBus.on("stop:approaching", (data) => {
+    // Notify students tracking this bus that it's nearing a stop
+    io.to(`bus:${data.bus_id}`).emit("bus:approaching", data);
   });
 
   return io;
