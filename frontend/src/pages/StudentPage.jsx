@@ -46,7 +46,7 @@ export default function StudentPage() {
         if (err.code === 1) setLocationError("Location permission denied. Please allow access.");
         else setLocationError("Location unavailable. Retrying…");
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 }
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
     );
   }, []);
 

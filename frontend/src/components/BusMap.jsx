@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -86,9 +86,21 @@ const stopIcon = L.divIcon({
 // ── Fly to ────────────────────────────────────────────────
 function FlyTo({ position, zoom, trigger }) {
   const map = useMap();
+  const didInit = useRef(false);
+
+  // Fly when the "My Location" button is pressed
   useEffect(() => {
     if (position && trigger) map.flyTo(position, zoom || 17, { duration: 1.5 });
   }, [trigger]);
+
+  // Auto-center on the user's real location the first time GPS resolves
+  useEffect(() => {
+    if (position && !didInit.current) {
+      didInit.current = true;
+      map.setView(position, 16);
+    }
+  }, [position]);
+
   return null;
 }
 
@@ -163,7 +175,7 @@ export default function BusMap({
   flyToUser,
   onLocate,
 }) {
-  const [activeLayer, setActiveLayer] = useState("street");
+  const [activeLayer, setActiveLayer] = useState("satellite");
   const layer = MAP_LAYERS[activeLayer];
   const defaultCenter = userLocation || [13.0827, 80.2707];
 
