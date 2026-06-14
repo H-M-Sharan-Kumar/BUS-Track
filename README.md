@@ -1,8 +1,8 @@
 # BusTrack — Real-Time College Bus Tracking
 
-Live app: [bus-track-production-ba4e.up.railway.app](https://bus-track-production-ba4e.up.railway.app)
+Live app: [bustrack-gcyf.onrender.com](https://bustrack-gcyf.onrender.com)
 
-BusTrack is a real-time college bus tracking web app (installable as a PWA). A driver broadcasts their live GPS from a phone browser, and students see where the bus is, how fast it is moving, and when it will arrive. Positions refresh every 4 seconds. The app is built with Node.js, Express, PostgreSQL, Redis, Socket.io, and React + Vite, and is deployed on Railway.
+BusTrack is a real-time college bus tracking web app (installable as a PWA). A driver broadcasts their live GPS from a phone browser, and students see where the bus is, how fast it is moving, and when it will arrive. Positions refresh every 4 seconds. The app is built with Node.js, Express, PostgreSQL, Socket.io, and React + Vite, and is deployed on Render with a Neon PostgreSQL database.
 
 ## Features
 
@@ -90,20 +90,20 @@ Open the live link in a phone browser, open the browser menu, and choose "Add to
 Driver phone GPS
       |  POST /api/location/update (every 4s)
       v
-  Express API ---> PostgreSQL   (permanent position history + all data)
-      |        \-> Redis        (latest position cache + pub/sub)
+  Express API ---> PostgreSQL        (permanent position history + all data)
+      |        \-> In-memory store    (latest position cache + event bus)
       v
-  Redis pub/sub ---> Socket.io ---> Student maps update live
+  Event bus ---> Socket.io ---> Student maps update live
 ```
 
 | Layer | Technology |
 |-------|------------|
 | Frontend | React + Vite, React Router, Leaflet maps, Socket.io-client, PWA (service worker) |
 | Backend | Node.js, Express, Socket.io, JWT auth |
-| Database | PostgreSQL |
-| Cache / Realtime | Redis (live positions + pub/sub) |
+| Database | PostgreSQL (Neon) |
+| Realtime | In-memory live store + Socket.io |
 | Geocoding | OpenStreetMap Nominatim (stop pinning) |
-| Hosting | Railway (app + PostgreSQL + Redis) |
+| Hosting | Render (app) + Neon (PostgreSQL) |
 
 ## Project Structure
 
@@ -111,10 +111,10 @@ Driver phone GPS
 bustrack/
 ├── backend/                 # Node.js + Express API + Socket.io
 │   └── src/
-│       ├── config/          # db.js (PostgreSQL), redis.js
+│       ├── config/          # db.js (PostgreSQL), liveStore.js (in-memory)
 │       ├── middleware/      # auth.js (JWT + role guard)
 │       ├── routes/          # auth, location, buses, trips, stops, admin
-│       ├── socket/          # Socket.io server + Redis pub/sub
+│       ├── socket/          # Socket.io server (live broadcasts)
 │       └── index.js         # entry point (also serves built frontend)
 ├── frontend/                # React + Vite PWA
 │   └── src/
@@ -128,18 +128,15 @@ bustrack/
 
 ## Run Locally
 
-Prerequisites: Node.js 20+ and Docker (for PostgreSQL and Redis).
+Prerequisites: Node.js 20+ and a PostgreSQL database (local, or a free Neon database).
 
 ```bash
-# 1. Start PostgreSQL + Redis
-docker compose up -d
-
-# 2. Backend
+# 1. Backend — set DATABASE_URL in backend/.env, then:
 cd backend
 npm install
 npm run dev            # http://localhost:4000
 
-# 3. Frontend (new terminal)
+# 2. Frontend (new terminal)
 cd frontend
 npm install
 npm run dev            # http://localhost:5173
