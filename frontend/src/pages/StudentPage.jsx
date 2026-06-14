@@ -38,8 +38,16 @@ export default function StudentPage() {
     setLocationError(null);
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
-        setUserLocation([pos.coords.latitude, pos.coords.longitude]);
-        setAccuracy(pos.coords.accuracy);
+        const acc = pos.coords.accuracy;
+        // Keep the most accurate fix: ignore a new reading that is much worse
+        // than the best one we already have (avoids jumping to rough IP-based fixes).
+        setAccuracy((prevAcc) => {
+          if (prevAcc == null || acc <= prevAcc + 30) {
+            setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+            return acc;
+          }
+          return prevAcc;
+        });
         setLocationError(null);
       },
       (err) => {
